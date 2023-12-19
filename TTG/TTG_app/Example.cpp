@@ -1,5 +1,7 @@
 #pragma once
 
+#include <assimp/Importer.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application.h"
@@ -49,7 +51,7 @@ public:
 			scene.bsdf.emplace_back(std::make_unique<GlassBsdf>());
 		}
 
-		switch (0)
+		switch (3)
 		{
 		case 0:
 			cornellBox();
@@ -60,6 +62,9 @@ public:
 		case 2:
 			glass();
 			break;
+        case 3:
+            Balls();
+            break;
 		}
 	}
 
@@ -361,6 +366,7 @@ private:
 
 		ImGui::Checkbox("slow random", renderer.getSlowRandom());
 		ImGui::Checkbox("sky light emission", renderer.getSkyLightSwitch());
+        ImGui::DragFloat("Dist Blur", renderer.getDistBlur(), 0.01f, 0.0f, FLT_MAX);
 
 		ImGui::End();
 	}
@@ -821,6 +827,40 @@ private:
 
 		*renderer.getSkyLightSwitch() = true;
 	}
+    
+    void Balls()
+    {
+        camera.position = glm::vec3(0.0f, -10.0f, 1.8f);
+        camera.rotation = glm::vec3(45.0f, -90.0f, 0.0f);
+        
+        *renderer.getSkyLightSwitch() = true;
+        {
+            Material& mat0 = scene.mat.emplace_back();
+            mat0.albedo = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+        }
+        {
+            Material& mat1 = scene.mat.emplace_back();
+            mat1.albedo = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+        }
+        
+        for (float x = -5.0f; x <= 5.0f; x += 2.0f)
+        {
+            for (float z = -15.0f; z <= -5.0f; z += 2.0f)
+            {
+                Sphere& sphere0 = scene.spheres.emplace_back();
+                sphere0.Position = glm::vec3(x, -3.0f, z);
+                sphere0.radius = 1.0f;
+                sphere0.bsdfIndex = Basic;
+                sphere0.matIndex = 0;
+            }
+        }
+        
+        Plane& plane0 = scene.planes.emplace_back();
+        plane0.Position = glm::vec3(0.0f, -4.0f, 0.0f);
+        plane0.normal = glm::vec3(0.0f, 1.0f, 0.0f);
+        plane0.bsdfIndex = Basic;
+        plane0.matIndex = 1;
+    }
 
 	void addSquare(glm::vec3 pos, glm::vec3 scale, int mat, bool flipFace)
 	{

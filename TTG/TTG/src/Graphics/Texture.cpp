@@ -48,6 +48,9 @@ namespace TTG
 
 		m_width = width;
 		m_height = height;
+        
+        if (m_id != -1)
+            glDeleteTextures(1, &m_id);
 
 		glGenTextures(1, &m_id);
 

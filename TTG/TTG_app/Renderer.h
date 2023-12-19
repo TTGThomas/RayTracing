@@ -47,6 +47,7 @@ public:
 	bool* getAccumulate() { return &m_accumulate; };
 	bool* getSlowRandom() { return &slowRandom; }
     bool* getSkyLightSwitch() { return &skyLight; }
+    float* getDistBlur() { return &distBlur; }
 private:
 	int m_frameIndex = 0;
 	glm::vec3 preCalculateRandom = glm::vec3(0.0f);
@@ -65,5 +66,7 @@ private:
 	bool m_accumulate = false;
 	bool slowRandom = true;
 	bool skyLight = false;
+    
+    float distBlur = 17.0f;
 };
 
