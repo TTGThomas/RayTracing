@@ -366,7 +366,9 @@ private:
 
 		ImGui::Checkbox("slow random", renderer.getSlowRandom());
 		ImGui::Checkbox("sky light emission", renderer.getSkyLightSwitch());
-        ImGui::DragFloat("Dist Blur", renderer.getDistBlur(), 0.01f, 0.0f, FLT_MAX);
+        ImGui::Checkbox("User Dist Blur", renderer.getDistBlurSwitch());
+        if (*renderer.getDistBlurSwitch())
+            ImGui::DragFloat("Dist Blur", renderer.getDistBlur(), 0.01f, 0.0f, FLT_MAX);
 
 		ImGui::End();
 	}
@@ -840,7 +842,7 @@ private:
         }
         {
             Material& mat1 = scene.mat.emplace_back();
-            mat1.albedo = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+            mat1.albedo = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
         }
         
         for (float x = -5.0f; x <= 5.0f; x += 2.0f)

@@ -363,13 +363,13 @@ glm::vec4 Renderer::perPixel(int x, int y)
 	ray.Origin = m_activateCamera->position;
 	ray.Direction = m_activateCamera->rayDirections[y * m_width + x];
 
-#define DISTANCEBLUR 1
-#if DISTANCEBLUR
-    glm::vec3 point = ray.Origin + ray.Direction * distBlur;
-    ray.Origin += TTG::Random::inUnitSphere() * 2.0f;
-    ray.Direction = point - ray.Origin;
-    ray.Direction = TTG::Math::normalize(ray.Direction);
-#endif
+    if (useDistBlur)
+    {
+        glm::vec3 point = ray.Origin + ray.Direction * distBlur;
+        ray.Origin += TTG::Random::inUnitSphere() * 2.0f;
+        ray.Direction = point - ray.Origin;
+        ray.Direction = TTG::Math::normalize(ray.Direction);
+    }
 
 	//unsigned int seed = (y * m_width + x) * m_frameIndex;
 

@@ -48,6 +48,7 @@ public:
 	bool* getSlowRandom() { return &slowRandom; }
     bool* getSkyLightSwitch() { return &skyLight; }
     float* getDistBlur() { return &distBlur; }
+    bool* getDistBlurSwitch() { return &useDistBlur; }
 private:
 	int m_frameIndex = 0;
 	glm::vec3 preCalculateRandom = glm::vec3(0.0f);
@@ -68,5 +69,6 @@ private:
 	bool skyLight = false;
     
     float distBlur = 17.0f;
+    bool useDistBlur = false;
 };
 
