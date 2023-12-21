@@ -1,7 +1,5 @@
 #pragma once
 
-#include <assimp/Importer.hpp>
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Application.h"
@@ -18,7 +16,7 @@
 #include "Materials/GlassBsdf.h"
 
 #include "Renderer.h"
-#include "Scene.h"
+#include "Hittables/Scene.h"
 #include "shapes/Triangle.h"
 
 #include <stdio.h>

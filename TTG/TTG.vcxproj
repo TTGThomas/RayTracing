@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{6f2c779a-02ec-4c35-82c0-861288c57524}</ProjectGuid>
+    <RootNamespace>TTG</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendors\include;$(SolutionDir)TTG\TTG\src;$(SolutionDir)TTG\third\imguiOpenGL</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendors\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;GLFW\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendors\include;$(SolutionDir)TTG\TTG\src;$(SolutionDir)TTG\third\imguiOpenGL;vendors\include;TTG\TTG\src;TTG\third\imguiOpenGL</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendors\lib;vendors\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;GLFW\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="TTG_app\Materials\GlassBsdf.cpp" />
+    <ClCompile Include="TTG_app\Materials\TestBsdf.cpp" />
+    <ClCompile Include="TTG_app\Materials\BasicBsdf.cpp" />
+    <ClCompile Include="TTG_app\shapes\Triangle.cpp" />
+    <ClCompile Include="TTG\src\Objects\Camera.cpp" />
+    <ClCompile Include="TTG_app\Renderer.cpp" />
+    <ClCompile Include="TTG\src\Graphics\Texture.cpp" />
+    <ClCompile Include="TTG\src\Application.cpp" />
+    <ClCompile Include="third\glad.c" />
+    <ClCompile Include="third\imguiOpenGL\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="third\imguiOpenGL\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="third\imguiOpenGL\imgui.cpp" />
+    <ClCompile Include="third\imguiOpenGL\imgui_demo.cpp" />
+    <ClCompile Include="third\imguiOpenGL\imgui_draw.cpp" />
+    <ClCompile Include="third\imguiOpenGL\imgui_tables.cpp" />
+    <ClCompile Include="third\imguiOpenGL\imgui_widgets.cpp" />
+    <ClCompile Include="third\imguiOpenGL\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="third\stb.cpp" />
+    <ClCompile Include="TTG_app\Example.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TTG_app\Materials\GlassBsdf.h" />
+    <ClInclude Include="TTG_app\Materials\TestBsdf.h" />
+    <ClInclude Include="TTG_app\Materials.h" />
+    <ClInclude Include="TTG_app\Materials\BasicBsdf.h" />
+    <ClInclude Include="TTG_app\HitPayload.h" />
+    <ClInclude Include="TTG_app\Materials\Bsdf.h" />
+    <ClInclude Include="TTG_app\shapes\Triangle.h" />
+    <ClInclude Include="TTG\src\Objects\Camera.h" />
+    <ClInclude Include="TTG\src\Utils\Math.h" />
+    <ClInclude Include="TTG\src\Utils\Random.h" />
+    <ClInclude Include="TTG\src\Utils\Timer.h" />
+    <ClInclude Include="TTG_app\Ray.h" />
+    <ClInclude Include="TTG_app\Renderer.h" />
+    <ClInclude Include="TTG\src\Graphics\Texture.h" />
+    <ClInclude Include="TTG\src\Application.h" />
+    <ClInclude Include="third\imguiOpenGL\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="third\imguiOpenGL\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="third\imguiOpenGL\imconfig.h" />
+    <ClInclude Include="third\imguiOpenGL\imgui.h" />
+    <ClInclude Include="third\imguiOpenGL\imgui_internal.h" />
+    <ClInclude Include="third\imguiOpenGL\imstb_rectpack.h" />
+    <ClInclude Include="third\imguiOpenGL\imstb_textedit.h" />
+    <ClInclude Include="third\imguiOpenGL\imstb_truetype.h" />
+    <ClInclude Include="third\imguiOpenGL\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="third\imguiOpenGL\misc\single_file\imgui_single_file.h" />
+    <ClInclude Include="TTG\src\EntryPoint.h" />
+    <ClInclude Include="TTG\src\ImGuiOpenGL.h" />
+    <ClInclude Include="TTG\src\Layer.h" />
+    <ClInclude Include="TTG\src\Utils\Utils.h" />
+    <ClInclude Include="TTG_app\Scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="third\imguiOpenGL\LICENSE.txt" />
+    <Text Include="third\imguiOpenGL\misc\debuggers\README.txt" />
+    <Text Include="third\imguiOpenGL\misc\README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgui.ini" />
+    <None Include="third\imguiOpenGL\misc\debuggers\imgui.gdb" />
+    <None Include="third\imguiOpenGL\misc\debuggers\imgui.natstepfilter" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="third\imguiOpenGL\misc\debuggers\imgui.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="third\imguiOpenGL\misc\fonts\Cousine-Regular.ttf" />
+    <Font Include="third\imguiOpenGL\misc\fonts\DroidSans.ttf" />
+    <Font Include="third\imguiOpenGL\misc\fonts\Karla-Regular.ttf" />
+    <Font Include="third\imguiOpenGL\misc\fonts\ProggyClean.ttf" />
+    <Font Include="third\imguiOpenGL\misc\fonts\ProggyTiny.ttf" />
+    <Font Include="third\imguiOpenGL\misc\fonts\Roboto-Medium.ttf" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

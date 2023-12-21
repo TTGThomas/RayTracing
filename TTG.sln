@@ -5,8 +5,6 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TTG", "TTG\TTG.vcxproj", "{6F2C779A-02EC-4C35-82C0-861288C57524}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RayTracingTest", "RayTracingTest\RayTracingTest.vdproj", "{A8CCAE5C-636F-4251-8AFC-28A69B846F9D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,10 +21,6 @@ Global
 		{6F2C779A-02EC-4C35-82C0-861288C57524}.Release|x64.Build.0 = Release|x64
 		{6F2C779A-02EC-4C35-82C0-861288C57524}.Release|x86.ActiveCfg = Release|Win32
 		{6F2C779A-02EC-4C35-82C0-861288C57524}.Release|x86.Build.0 = Release|Win32
-		{A8CCAE5C-636F-4251-8AFC-28A69B846F9D}.Debug|x64.ActiveCfg = Debug
-		{A8CCAE5C-636F-4251-8AFC-28A69B846F9D}.Debug|x86.ActiveCfg = Debug
-		{A8CCAE5C-636F-4251-8AFC-28A69B846F9D}.Release|x64.ActiveCfg = Release
-		{A8CCAE5C-636F-4251-8AFC-28A69B846F9D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
