@@ -4,15 +4,15 @@
 
 struct Material
 {
-	glm::vec4 albedo = glm::vec4(0.0f);
-	float roughness = 1.0f;
-	float metalic = 0.0f;
+	glm::vec4 m_albedo = glm::vec4(0.0f);
+	float m_roughness = 1.0f;
+	float m_metalic = 0.0f;
 
-	glm::vec3 emissionColor = glm::vec4(0.0f);
-	float emissionPower = 0.0f;
+	glm::vec3 m_emissionColor = glm::vec4(0.0f);
+	float m_emissionPower = 0.0f;
 
-	glm::vec3 getEmission()
+	glm::vec3 GetEmission()
 	{
-		return emissionColor * emissionPower;
+		return m_emissionColor * m_emissionPower;
 	}
 };

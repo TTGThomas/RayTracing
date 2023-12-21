@@ -31,44 +31,44 @@ namespace TTG
 	public:
 		Camera();
 
-		void updateMatrix();
+		void UpdateMatrix();
 
-		glm::mat4 getView();
-		glm::mat4 getInverseView();
-		glm::mat4 getProjection(const Config& config) const;
-		glm::mat4 getInverseProjection(const Config& config) const;
+		glm::mat4 GetView();
+		glm::mat4 GetInverseView();
+		glm::mat4 GetProjection(const Config& config) const;
+		glm::mat4 GetInverseProjection(const Config& config) const;
 
-		void addPosition(const DIRECTION& dir, const Config& config);
+		void AddPosition(const DIRECTION& dir, const Config& config);
 
-		bool update(Config& config);
+		bool Update(Config& config);
 
-		void reCalculateRayDirections(const Config& config);
-		void reCalculateRayDirections(const Config& config, int x, int y);
+		void ReCalculateRayDirections(const Config& config);
+		void ReCalculateRayDirections(const Config& config, int x, int y);
 
-		bool getMoved() { return moved; }
+		bool GetMoved() { return m_moved; }
 	public:
-		glm::vec3 position = glm::vec3(0.0f);
-		glm::vec3 rotation = glm::vec3(0.0f, -90.0f, 0.0f);
-		float zoom = 45.0f;
-		double speed = 0.0;
+		glm::vec3 m_position = glm::vec3(0.0f);
+		glm::vec3 m_rotation = glm::vec3(0.0f, -90.0f, 0.0f);
+		float m_zoom = 45.0f;
+		double m_speed = 0.0;
 
 		// the max that you can look up and down
-		int maxRotationX = 89.0f;
+		int m_maxRotationX = 89.0f;
 
-		std::vector<glm::vec3> rayDirections;
+		std::vector<glm::vec3> m_rayDirections;
 
 	public:
-		glm::vec3 cameraFront = glm::vec3(0.0f);
-		glm::vec3 cameraUp = glm::vec3(0.0f);
-		glm::vec3 cameraRight = glm::vec3(0.0f);
-		glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 m_cameraFront = glm::vec3(0.0f);
+		glm::vec3 m_cameraUp = glm::vec3(0.0f);
+		glm::vec3 m_cameraRight = glm::vec3(0.0f);
+		glm::vec3 m_worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	public:
-		glm::vec3 front = glm::vec3(0.0f);
-		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 right = glm::vec3(0.0f);
+		glm::vec3 m_front = glm::vec3(0.0f);
+		glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 m_right = glm::vec3(0.0f);
 	private:
 		static ImVec2 oldMousePos;
 		static bool isFirst;
-		bool moved = false;
+		bool m_moved = false;
 	};
 }

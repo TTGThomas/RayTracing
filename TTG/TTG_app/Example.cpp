@@ -26,27 +26,27 @@ class ExampleLayer : public Layer
 {
 public:
     ExampleLayer()
-    : renderer(&scene, &camera)
+    : m_renderer(&m_scene, &m_camera)
     {
-        camera.position = glm::vec3(0.03f, 0.0f, 1.8f);
-        camera.speed = 1.0f;
+        m_camera.m_position = glm::vec3(0.03f, 0.0f, 1.8f);
+        m_camera.m_speed = 1.0f;
         
         {
             // BSDF 0
 #define Basic 0
-            scene.bsdf.emplace_back(std::make_unique<BasicBsdf>());
+            m_scene.bsdf.emplace_back(std::make_unique<BasicBsdf>());
         }
         
         {
             // BSDF 1
 #define Test 1
-            scene.bsdf.emplace_back(std::make_unique<TestBsdf>());
+			m_scene.bsdf.emplace_back(std::make_unique<TestBsdf>());
         }
         
         {
             // BSDF 2
 #define Glass 2
-            scene.bsdf.emplace_back(std::make_unique<GlassBsdf>());
+			m_scene.bsdf.emplace_back(std::make_unique<GlassBsdf>());
         }
         
         switch (0)
@@ -66,76 +66,31 @@ public:
         }
     }
     
-    virtual void onAttach(GLFWwindow* handle) override
+    virtual void OnAttach(GLFWwindow* handle) override
     {
         m_handle = handle;
     }
     
-    virtual void onDetach() override
+    virtual void OnDetach() override
     {
     }
     
-    virtual void onUIRender(int id) override
+    virtual void OnUIRender(int id) override
     {
-        tick.start();
+        m_tick.Start();
         mainViewport(id);
         editor();
-        tick.stop();
+        m_tick.Stop();
     }
     
-    virtual void onTick() override
+    virtual void OnTick() override
     {
-        return;
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-        {
-            glm::vec<2, double> pos;
-            
-            glfwGetCursorPos(m_handle, &pos.x, &pos.y);
-            
-            pos.y -= 30.0f;
-            
-            if (ImGui::GetMousePos().x > renderer.getWidth())
-                return;
-            
-            Ray ray;
-            ray.Origin = camera.position;
-            ray.Origin.y = -ray.Origin.y;
-            int index = (pos.y) * renderer.getWidth() + pos.x;
-            
-            if (index > camera.rayDirections.size() - 1)
-                return;
-            
-            ray.Direction = camera.rayDirections[index];
-            ray.Direction.y = -ray.Direction.y;
-            //ray.Origin += ray.Direction;
-            HitPayload payload = renderer.traceRay(ray);
-            
-            //Triangle& tri = scene.triangles.emplace_back();
-            //tri.PosA = ray.Origin;
-            //tri.PosB = ray.Origin + ray.Direction * 10.0f;
-            //tri.PosB.y += 0.1f;
-            //tri.PosC = ray.Origin + ray.Direction * 10.0f;
-            //tri.PosC.y -= 0.1f;
-            //tri.bsdfIndex = Basic;
-            //tri.matIndex = scene.mat.size() - 1;
-            
-            if (payload.hasHit)
-            {
-                selected = true;
-                sIndex = payload.hitIndex;
-                sType = payload.hitType;
-            }
-            else
-            {
-                selected = false;
-            }
-        }
     }
     
 private:
     void mainViewport(int id)
     {
-        if (!viewPortOpen)
+        if (!m_viewPortOpen)
             return;
         
         if (docking)
@@ -146,13 +101,13 @@ private:
             }
         }
         
-        ImGui::Begin("main viewport", &viewPortOpen, ImGuiWindowFlags_MenuBar);
+        ImGui::Begin("main viewport", &m_viewPortOpen, ImGuiWindowFlags_MenuBar);
         
         windowSetup();
         
-        config = { ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 60.0f, 0.1f };
-        if (camera.update(config))
-            renderer.resetFrameIndex();
+		m_config = { ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 60.0f, 0.1f };
+        if (m_camera.Update(m_config))
+			m_renderer.ResetFrameIndex();
         render();
         
         ImGui::End();
@@ -160,232 +115,67 @@ private:
     
     void editor()
     {
-        if (!editorOpen)
+        if (!m_editorOpen)
             return;
         
-        ImGui::Begin("Editor", &editorOpen);
+        ImGui::Begin("Editor", &m_editorOpen);
         
-        ImGui::SeparatorText("spheres");
-        for (int i = 0; i < scene.spheres.size(); i++)
-        {
-            ImGui::PushID(i);
-            
-            Sphere& sphere = scene.spheres[i];
-            ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
-            ImGui::DragFloat("Radius", &sphere.radius, 0.1f);
-            ImGui::DragInt("material index", &sphere.matIndex, 0.1f, 0, scene.mat.size() - 1);
-            ImGui::Checkbox("Visible", &sphere.visible);
-            ImGui::DragInt("bsdf index", &sphere.bsdfIndex, 0.1f, 0, scene.bsdf.size() - 1);
-            if (ImGui::CollapsingHeader("advance"))
-            {
-                scene.bsdf[sphere.bsdfIndex]->advanceSetting();
-            }
-            ImGui::Separator();
-            
-            ImGui::PopID();
-        }
-        
-        ImGui::SeparatorText("planes");
-        for (int i = 0; i < scene.planes.size(); i++)
-        {
-            ImGui::PushID(i + scene.spheres.size());
-            
-            Plane& plane = scene.planes[i];
-            ImGui::DragFloat3("Position", glm::value_ptr(plane.Position), 0.1f);
-            ImGui::DragFloat3("Normal", glm::value_ptr(plane.normal), 0.1f);
-            ImGui::DragInt("material index", &plane.matIndex, 0.1f, 0, scene.mat.size() - 1);
-            ImGui::Checkbox("Visible", &plane.visible);
-            ImGui::Separator();
-            
-            ImGui::PopID();
-        }
-        
-        ImGui::SeparatorText("triangles");
-        for (int i = 0; i < scene.triangles.size(); i++)
-        {
-            ImGui::PushID(i + scene.spheres.size() + scene.planes.size());
-            
-            Triangle& tri = scene.triangles[i];
-            ImGui::DragFloat3("PositionA", glm::value_ptr(tri.PosA), 0.1f);
-            ImGui::DragFloat3("PositionB", glm::value_ptr(tri.PosB), 0.1f);
-            ImGui::DragFloat3("PositionC", glm::value_ptr(tri.PosC), 0.1f);
-            
-            ImGui::DragFloat3("NormalA", glm::value_ptr(tri.na), 0.1f);
-            ImGui::DragFloat3("NormalB", glm::value_ptr(tri.nb), 0.1f);
-            ImGui::DragFloat3("NormalC", glm::value_ptr(tri.nc), 0.1f);
-            
-            ImGui::DragInt("material index", &tri.matIndex, 0.1f, 0, scene.mat.size() - 1);
-            
-            if (ImGui::Button("compute normal"))
-            {
-                Shapes::Triangle t;
-                t.init(tri);
-                t.computeNormal();
-                scene.triangles[i] = t.getData();
-            }
-            
-            if (ImGui::Button("flip normal"))
-            {
-                Shapes::Triangle t;
-                t.init(tri);
-                t.flipNormal();
-                scene.triangles[i] = t.getData();
-            }
-            
-            if (ImGui::Button("flip Sequence"))
-            {
-                Shapes::Triangle t;
-                t.init(tri);
-                t.flipSequence();
-                scene.triangles[i] = t.getData();
-            }
-            
-            ImGui::Checkbox("Visible", &tri.visible);
-            
-            ImGui::Separator();
-            
-            ImGui::PopID();
-            
-            ImGui::SeparatorText("materials");
-            for (int i = 0; i < scene.mat.size(); i++)
-            {
-                ImGui::PushID(i);
-                
-                Material& mat = scene.mat[i];
-                ImGui::Text("material %i", i);
-                ImGui::ColorEdit3("color", glm::value_ptr(mat.albedo));
-                ImGui::DragFloat("roughness", &mat.roughness, 0.01f, 0.0f, 1.0f);
-                ImGui::DragFloat("metalic", &mat.metalic, 0.01f, 0.0f, 1.0f);
-                ImGui::ColorEdit3("emission color", glm::value_ptr(mat.emissionColor));
-                ImGui::DragFloat("emission power", &mat.emissionPower, 0.01f, 0.0f, FLT_MAX);
-                ImGui::Separator();
-                
-                ImGui::PopID();
-            }
-        }
-        else
-        {
-            Hittable* entity = nullptr;
-            
-            if (sType == HitType::SPHERE)
-            {
-                ImGui::SeparatorText("Sphere");
-                
-                Sphere& sphere = scene.spheres[sIndex];
-                entity = &sphere;
-                
-                ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
-                ImGui::DragFloat("Radius", &sphere.radius, 0.1f);
-                ImGui::DragInt("material index", &sphere.matIndex, 0.f, 0, scene.mat.size() - 1);
-                ImGui::Checkbox("Visible", &sphere.visible);
-            }
-            else if (sType == HitType::PLANE)
-            {
-                ImGui::SeparatorText("Plane");
-                
-                Plane& plane = scene.planes[sIndex];
-                entity = &plane;
-                
-                ImGui::DragFloat3("Position", glm::value_ptr(plane.Position), 0.1f);
-                ImGui::DragFloat3("Normal", glm::value_ptr(plane.normal), 0.1f);
-                ImGui::DragInt("material index", &plane.matIndex, 0.f, 0, scene.mat.size() - 1);
-                ImGui::Checkbox("Visible", &plane.visible);
-            }
-            else if (sType == HitType::TRIANGLE)
-            {
-                ImGui::SeparatorText("Triangle");
-                
-                Triangle& tri = scene.triangles[sIndex];
-                entity = &tri;
-                
-                ImGui::DragFloat3("PositionA", glm::value_ptr(tri.PosA), 0.1f);
-                ImGui::DragFloat3("PositionB", glm::value_ptr(tri.PosB), 0.1f);
-                ImGui::DragFloat3("PositionC", glm::value_ptr(tri.PosC), 0.1f);
-                
-                ImGui::DragFloat3("NormalA", glm::value_ptr(tri.na), 0.1f);
-                ImGui::DragFloat3("NormalB", glm::value_ptr(tri.nb), 0.1f);
-                ImGui::DragFloat3("NormalC", glm::value_ptr(tri.nc), 0.1f);
-                
-                ImGui::DragInt("material index", &tri.matIndex, 0.f, 0, scene.mat.size() - 1);
-                
-                if (ImGui::Button("compute normal"))
-                {
-                    Shapes::Triangle t;
-                    t.init(tri);
-                    t.computeNormal();
-                    tri = t.getData();
-                }
-                
-                if (ImGui::Button("flip normal"))
-                {
-                    Shapes::Triangle t;
-                    t.init(tri);
-                    t.flipNormal();
-                    tri = t.getData();
-                }
-                
-                if (ImGui::Button("flip Sequence"))
-                {
-                    Shapes::Triangle t;
-                    t.init(tri);
-                    t.flipSequence();
-                    tri = t.getData();
-                }
-                
-                ImGui::Checkbox("Visible", &tri.visible);
-            }
-            
-            ImGui::SeparatorText("Binded Material");
-            
-            if (entity != nullptr)
-            {
-                Material& mat = scene.mat[entity->matIndex];
-                ImGui::ColorEdit3("color", glm::value_ptr(mat.albedo));
-                ImGui::DragFloat("roughness", &mat.roughness, 0.01f, 0.0f, 1.0f);
-                ImGui::DragFloat("metalic", &mat.metalic, 0.01f, 0.0f, 1.0f);
-                ImGui::ColorEdit3("emission color", glm::value_ptr(mat.emissionColor));
-                ImGui::DragFloat("emission power", &mat.emissionPower, 0.01f, 0.0f, FLT_MAX);
-                ImGui::Separator();
-            }
-        }
+		for (int i = 0; i < m_scene.objects.size(); i++)
+		{
+			ImGui::PushID(i);
+			HitType& type = m_scene.objects[i].m_type;
+			if (type == HitType::TRIANGLE)
+			{
+				ImGui::SeparatorText("Triangle");
+			}
+			else if (type == HitType::SPHERE)
+			{
+				ImGui::SeparatorText("Sphere");
+			}
+			else if (type == HitType::PLANE)
+			{
+				ImGui::SeparatorText("Plane");
+			}
+			ImGui::PopID;
+		}
         
         ImGui::SeparatorText("editors");
         ImGui::Text("this is the Editor");
-        ImGui::Text("last render: %fms", t.ms());
-        ImGui::Text("last tick: %fms", tick.ms());
+        ImGui::Text("last render: %fms", m_t.Ms());
+        ImGui::Text("last tick: %fms", m_tick.Ms());
         if (ImGui::Button("reset"))
-            renderer.resetFrameIndex();
-        ImGui::Checkbox("accumulate", renderer.getAccumulate());
-        if (!(*renderer.getAccumulate()))
-            renderer.resetFrameIndex();
+            m_renderer.ResetFrameIndex();
+        ImGui::Checkbox("accumulate", m_renderer.GetAccumulate());
+        if (!(*m_renderer.GetAccumulate()))
+            m_renderer.ResetFrameIndex();
         
-        ImGui::Checkbox("slow random", renderer.getSlowRandom());
-        ImGui::Checkbox("sky light emission", renderer.getSkyLightSwitch());
-        ImGui::Checkbox("User Dist Blur", renderer.getDistBlurSwitch());
-        if (*renderer.getDistBlurSwitch())
-            ImGui::DragFloat("Dist Blur", renderer.getDistBlur(), 0.01f, 0.0f, FLT_MAX);
+        ImGui::Checkbox("slow random", m_renderer.GetSlowRandom());
+        ImGui::Checkbox("sky light emission", m_renderer.GetSkyLightSwitch());
+        ImGui::Checkbox("User Dist Blur", m_renderer.GetDistBlurSwitch());
+        if (*m_renderer.GetDistBlurSwitch())
+            ImGui::DragFloat("Dist Blur", m_renderer.GetDistBlur(), 0.01f, 0.0f, FLT_MAX);
         
         ImGui::End();
     }
 
 	void render()
 	{
-		t.start();
+		m_t.Start();
 
-		if (renderer.onResize())
+		if (m_renderer.OnResize())
 		{
-			camera.reCalculateRayDirections(config);
+			m_camera.ReCalculateRayDirections(m_config);
 		}
-		renderer.render(config);
+		m_renderer.Render(m_config);
 
-		t.stop();
+		m_t.Stop();
 
-		unsigned char* imageData = renderer.getImageData();
-		TTG::Texture& finalImage = renderer.getFinalImage();
+		unsigned char* imageData = m_renderer.GetImageData();
+		TTG::Texture& finalImage = m_renderer.GetFinalImage();
 		if (imageData)
 		{
-			finalImage.loadTextureFromData(imageData, 4, renderer.getWidth(), renderer.getHeight());
-			ImGui::Image(finalImage.getDescriptorSet(), { (float)renderer.getWidth(), (float)renderer.getHeight()});
+			finalImage.LoadTextureFromData(imageData, 4, m_renderer.GetWidth(), m_renderer.GetHeight());
+			ImGui::Image(finalImage.GetDescriptorSet(), { (float)m_renderer.GetWidth(), (float)m_renderer.GetHeight()});
 		}
 	}
 
@@ -410,23 +200,23 @@ private:
 	void test()
 	{
 		{
-			Material& mat0 = scene.mat.emplace_back();
-			mat0.albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
+			Material& mat0 = m_scene.mat.emplace_back();
+			mat0.m_albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 		}
 
 		{
-			Material& mat1 = scene.mat.emplace_back();
-			mat1.albedo = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
-			mat1.emissionColor = mat1.albedo;
-			mat1.emissionPower = 20.0f;
+			Material& mat1 = m_scene.mat.emplace_back();
+			mat1.m_albedo = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
+			mat1.m_emissionColor = mat1.m_albedo;
+			mat1.m_emissionPower = 20.0f;
 		}
 
 		{
-			Material& mat2 = scene.mat.emplace_back();
-			mat2.albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
-			mat2.roughness = 1.0f;
+			Material& mat2 = m_scene.mat.emplace_back();
+			mat2.m_albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
+			mat2.m_roughness = 1.0f;
 		}
-		*renderer.getSkyLightSwitch() = true;
+		*m_renderer.GetSkyLightSwitch() = true;
 
 		{
 			constexpr float holeSize = 0.1f;
@@ -458,28 +248,28 @@ private:
 	{
 		{
 			// white
-			Material& mat0 = scene.mat.emplace_back();
-			mat0.albedo = glm::vec4(1.0f);
+			Material& mat0 = m_scene.mat.emplace_back();
+			mat0.m_albedo = glm::vec4(1.0f);
 		}
 
 		{
 			// red
-			Material& mat1 = scene.mat.emplace_back();
-			mat1.albedo = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+			Material& mat1 = m_scene.mat.emplace_back();
+			mat1.m_albedo = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 
 		{
 			// green
-			Material& mat2 = scene.mat.emplace_back();
-			mat2.albedo = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+			Material& mat2 = m_scene.mat.emplace_back();
+			mat2.m_albedo = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 		}
 
 		{
 			// light
-			Material& mat3 = scene.mat.emplace_back();
-			mat3.emissionColor = glm::vec4(1.0f);
-			mat3.albedo = glm::vec4(1.0f);
-			mat3.emissionPower = 10.0f;
+			Material& mat3 = m_scene.mat.emplace_back();
+			mat3.m_emissionColor = glm::vec4(1.0f);
+			mat3.m_albedo = glm::vec4(1.0f);
+			mat3.m_emissionPower = 10.0f;
 		}
 
 		//scene.spheres.emplace_back();
@@ -488,375 +278,246 @@ private:
 
 		// light
 		{
-			tri.setPointA(-0.5f, 0.9f, -0.75f);
-			tri.setPointB(-0.5f, 0.9f, -0.25f);
-			tri.setPointC(0.5f, 0.9f, -0.25f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(3);
-			tri.addToScene(&scene);
+			tri.SetPointA(-0.5f, 0.9f, -0.75f);
+			tri.SetPointB(-0.5f, 0.9f, -0.25f);
+			tri.SetPointC(0.5f, 0.9f, -0.25f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(3);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-0.5f, 0.9f, -0.75f);
-			tri.setPointB(0.5f, 0.9f, -0.75f);
-			tri.setPointC(0.5f, 0.9f, -0.25f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(3);
-			tri.addToScene(&scene);
+			tri.SetPointA(-0.5f, 0.9f, -0.75f);
+			tri.SetPointB(0.5f, 0.9f, -0.75f);
+			tri.SetPointC(0.5f, 0.9f, -0.25f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(3);
+			tri.AddToScene(&m_scene);
 		}
 
 
 		// bottom square
 		{
-			tri.setPointA(-1.0f, -1.0f, -2.0f);
-			tri.setPointB(-1.0f, -1.0f, 0.0f);
-			tri.setPointC(1.0f, -1.0f, 0.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, -1.0f, -2.0f);
+			tri.SetPointB(-1.0f, -1.0f, 0.0f);
+			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, -1.0f, -2.0f);
-			tri.setPointB(1.0f, -1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, 0.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, -1.0f, -2.0f);
+			tri.SetPointB(1.0f, -1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		// top square
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(-1.0f, 1.0f, 0.0f);
-			tri.setPointC(1.0f, 1.0f, 0.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(-1.0f, 1.0f, 0.0f);
+			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(1.0f, 1.0f, -2.0f);
-			tri.setPointC(1.0f, 1.0f, 0.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(1.0f, 1.0f, -2.0f);
+			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		// left square
 		{
-			tri.setPointA(-1.0f, 1.0f, 0.0f);
-			tri.setPointB(-1.0f, -1.0f, 0.0f);
-			tri.setPointC(-1.0f, -1.0f, -2.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(1);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, 0.0f);
+			tri.SetPointB(-1.0f, -1.0f, 0.0f);
+			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(1);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, 1.0f, 0.0f);
-			tri.setPointB(-1.0f, 1.0f, -2.0f);
-			tri.setPointC(-1.0f, -1.0f, -2.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(1);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, 0.0f);
+			tri.SetPointB(-1.0f, 1.0f, -2.0f);
+			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(1);
+			tri.AddToScene(&m_scene);
 		}
 
 
 		// right square
 		{
-			tri.setPointA(1.0f, 1.0f, 0.0f);
-			tri.setPointB(1.0f, -1.0f, 0.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(2);
-			tri.addToScene(&scene);
+			tri.SetPointA(1.0f, 1.0f, 0.0f);
+			tri.SetPointB(1.0f, -1.0f, 0.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(2);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(1.0f, 1.0f, 0.0f);
-			tri.setPointB(1.0f, 1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(2);
-			tri.addToScene(&scene);
+			tri.SetPointA(1.0f, 1.0f, 0.0f);
+			tri.SetPointB(1.0f, 1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(2);
+			tri.AddToScene(&m_scene);
 		}
 
 
 		// forward square
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(-1.0f, -1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(-1.0f, -1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(1.0f, 1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(1.0f, 1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		// objects
 
-#define index 1
-#if index
 		{
-			Material& mat4 = scene.mat.emplace_back();
-			mat4.albedo = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
-            mat4.emissionColor = mat4.albedo;
-            mat4.emissionPower = 2.0f;
+			Material& mat4 = m_scene.mat.emplace_back();
+			mat4.m_albedo = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
+            mat4.m_emissionColor = mat4.m_albedo;
+            mat4.m_emissionPower = 2.0f;
 		}
         {
-            Material& mat5 = scene.mat.emplace_back();
-            mat5.albedo = glm::vec4(1.0f);
-            mat5.roughness = 0.0f;
+            Material& mat5 = m_scene.mat.emplace_back();
+            mat5.m_albedo = glm::vec4(1.0f);
+            mat5.m_roughness = 0.0f;
         }
 
-		Sphere& sphere0 = scene.spheres.emplace_back();
-		sphere0.bsdfIndex = Basic;
-		sphere0.matIndex = 4;
-		sphere0.Position = glm::vec3(0.4f, -0.6f, -0.8f);
-		sphere0.radius = 0.4f;
+		Sphere& sphere0 = m_scene.objects.emplace_back();
+		sphere0.m_bsdfIndex = Basic;
+		sphere0.m_matIndex = 4;
+		sphere0.m_position = glm::vec3(0.4f, -0.6f, -0.8f);
+		sphere0.m_radius = 0.4f;
 
-		
-
-		Sphere& sphere1 = scene.spheres.emplace_back();
-		sphere1.bsdfIndex = Basic;
-		sphere1.matIndex = 5;
-		sphere1.Position = glm::vec3(-0.4f, -0.6f, -1.0f);
-		sphere1.radius = 0.4f;
-#else
-		{
-			Material& mat4 = scene.mat.emplace_back();
-			mat4.albedo = glm::vec4(1.0f);
-		}
-
-		{
-			// bottom square
-			{
-				tri.setPointA(-1.0f, -1.0f, -2.0f);
-				tri.setPointB(-1.0f, -1.0f, 0.0f);
-				tri.setPointC(1.0f, -1.0f, 0.0f);
-				tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			{
-				tri.setPointA(-1.0f, -1.0f, -2.0f);
-				tri.setPointB(1.0f, -1.0f, -2.0f);
-				tri.setPointC(1.0f, -1.0f, 0.0f);
-				//tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			// top square
-			{
-				tri.setPointA(-1.0f, 1.0f, -2.0f);
-				tri.setPointB(-1.0f, 1.0f, 0.0f);
-				tri.setPointC(1.0f, 1.0f, 0.0f);
-				//tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			{
-				tri.setPointA(-1.0f, 1.0f, -2.0f);
-				tri.setPointB(1.0f, 1.0f, -2.0f);
-				tri.setPointC(1.0f, 1.0f, 0.0f);
-				tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			// left square
-			{
-				tri.setPointA(-1.0f, 1.0f, 0.0f);
-				tri.setPointB(-1.0f, -1.0f, 0.0f);
-				tri.setPointC(-1.0f, -1.0f, -2.0f);
-				tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			{
-				tri.setPointA(-1.0f, 1.0f, 0.0f);
-				tri.setPointB(-1.0f, 1.0f, -2.0f);
-				tri.setPointC(-1.0f, -1.0f, -2.0f);
-				//tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-
-			// right square
-			{
-				tri.setPointA(1.0f, 1.0f, 0.0f);
-				tri.setPointB(1.0f, -1.0f, 0.0f);
-				tri.setPointC(1.0f, -1.0f, -2.0f);
-				//tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			{
-				tri.setPointA(1.0f, 1.0f, 0.0f);
-				tri.setPointB(1.0f, 1.0f, -2.0f);
-				tri.setPointC(1.0f, -1.0f, -2.0f);
-				tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-
-			// forward square
-			{
-				tri.setPointA(-1.0f, 1.0f, -2.0f);
-				tri.setPointB(-1.0f, -1.0f, -2.0f);
-				tri.setPointC(1.0f, -1.0f, -2.0f);
-				tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-
-			{
-				tri.setPointA(-1.0f, 1.0f, -2.0f);
-				tri.setPointB(1.0f, 1.0f, -2.0f);
-				tri.setPointC(1.0f, -1.0f, -2.0f);
-				//tri.flipSequence();
-				tri.computeNormal();
-				tri.setBsdfIndex(Basic);
-				tri.setMaterialIndex(4);
-				tri.addToScene(&scene);
-			}
-		}
-#endif
+		Sphere& sphere1 = m_scene.objects.emplace_back();
+		sphere1.m_bsdfIndex = Basic;
+		sphere1.m_matIndex = 5;
+		sphere1.m_position = glm::vec3(-0.4f, -0.6f, -1.0f);
+		sphere1.m_radius = 0.4f;
 	}
 
 	void glass()
 	{
 		{
-			Material& mat0 = scene.mat.emplace_back();
-			mat0.albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
+			Material& mat0 = m_scene.mat.emplace_back();
+			mat0.m_albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 		}
 		Shapes::Triangle tri;
-		tri.setPointA(0.0f, 6.0f, -2.0f);
-		tri.setPointB(-3.0f, 0.0f, -2.0f);
-		tri.setPointC(3.0f, 0.0f, -2.0f);
-		tri.flipSequence();
-		tri.computeNormal();
-		tri.setMaterialIndex(0);
-		tri.setBsdfIndex(Glass);
-		tri.addToScene(&scene);
+		tri.SetPointA(0.0f, 6.0f, -2.0f);
+		tri.SetPointB(-3.0f, 0.0f, -2.0f);
+		tri.SetPointC(3.0f, 0.0f, -2.0f);
+		tri.FlipSequence();
+		tri.ComputeNormal();
+		tri.SetMaterialIndex(0);
+		tri.SetBsdfIndex(Glass);
+		tri.AddToScene(&m_scene);
 
-		tri.setPointA(0.0f, 6.0f, -2.01f);
-		tri.setPointB(-3.0f, 0.0f, -2.01f);
-		tri.setPointC(3.0f, 0.0f, -2.01f);
-		tri.flipSequence();
-		tri.computeNormal();
-		tri.addToScene(&scene);
+		tri.SetPointA(0.0f, 6.0f, -2.01f);
+		tri.SetPointB(-3.0f, 0.0f, -2.01f);
+		tri.SetPointC(3.0f, 0.0f, -2.01f);
+		tri.FlipSequence();
+		tri.ComputeNormal();
+		tri.AddToScene(&m_scene);
 
-		Sphere& sphere = scene.spheres.emplace_back();
-		sphere.bsdfIndex = Glass;
-		sphere.matIndex = 0;
-		sphere.Position = glm::vec3(2.0f, 2.0f, -3.5f);
+		Sphere& sphere = m_scene.objects.emplace_back();
+		sphere.m_bsdfIndex = Glass;
+		sphere.m_matIndex = 0;
+		sphere.m_position = glm::vec3(2.0f, 2.0f, -3.5f);
 
 		{
-			Material& mat1 = scene.mat.emplace_back();
-			mat1.albedo = glm::vec4(1.0f, 0.0f, 1.0f, 1.0);
+			Material& mat1 = m_scene.mat.emplace_back();
+			mat1.m_albedo = glm::vec4(1.0f, 0.0f, 1.0f, 1.0);
 		}
 
-		Sphere& sphere0 = scene.spheres.emplace_back();
-		sphere0.Position = glm::vec3(0.0f, 2.0f, -3.5f);
-		sphere0.radius = 1.0f;
-		sphere0.bsdfIndex = Basic;
-		sphere0.matIndex = 1;
+		Sphere& sphere0 = m_scene.objects.emplace_back();
+		sphere0.m_position = glm::vec3(0.0f, 2.0f, -3.5f);
+		sphere0.m_radius = 1.0f;
+		sphere0.m_bsdfIndex = Basic;
+		sphere0.m_matIndex = 1;
 
-		*renderer.getSkyLightSwitch() = true;
+		*m_renderer.GetSkyLightSwitch() = true;
 	}
     
     void Balls()
     {
-        camera.position = glm::vec3(0.0f, -10.0f, 1.8f);
-        camera.rotation = glm::vec3(45.0f, -90.0f, 0.0f);
+        m_camera.m_position = glm::vec3(0.0f, -10.0f, 1.8f);
+        m_camera.m_rotation = glm::vec3(45.0f, -90.0f, 0.0f);
         
-        *renderer.getSkyLightSwitch() = true;
+        *m_renderer.GetSkyLightSwitch() = true;
         {
-            Material& mat0 = scene.mat.emplace_back();
-            mat0.albedo = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+            Material& mat0 = m_scene.mat.emplace_back();
+            mat0.m_albedo = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
         }
         {
-            Material& mat1 = scene.mat.emplace_back();
-            mat1.albedo = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+            Material& mat1 = m_scene.mat.emplace_back();
+            mat1.m_albedo = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
         }
         
         for (float x = -5.0f; x <= 5.0f; x += 2.0f)
         {
             for (float z = -15.0f; z <= -5.0f; z += 2.0f)
             {
-                Sphere& sphere0 = scene.spheres.emplace_back();
-                sphere0.Position = glm::vec3(x, -3.0f, z);
-                sphere0.radius = 1.0f;
-                sphere0.bsdfIndex = Basic;
-                sphere0.matIndex = 0;
+                Sphere& sphere0 = m_scene.objects.emplace_back();
+                sphere0.m_position = glm::vec3(x, -3.0f, z);
+                sphere0.m_radius = 1.0f;
+                sphere0.m_bsdfIndex = Basic;
+                sphere0.m_matIndex = 0;
             }
         }
         
-        Plane& plane0 = scene.planes.emplace_back();
-        plane0.Position = glm::vec3(0.0f, -4.0f, 0.0f);
-        plane0.normal = glm::vec3(0.0f, 1.0f, 0.0f);
-        plane0.bsdfIndex = Basic;
-        plane0.matIndex = 1;
+        Plane& plane0 = m_scene.objects.emplace_back();
+        plane0.m_position = glm::vec3(0.0f, -4.0f, 0.0f);
+        plane0.m_normal = glm::vec3(0.0f, 1.0f, 0.0f);
+        plane0.m_bsdfIndex = Basic;
+        plane0.m_matIndex = 1;
     }
 
 	void addSquare(glm::vec3 pos, glm::vec3 scale, int mat, bool flipFace)
@@ -864,21 +525,21 @@ private:
 		glm::vec3 radius = scale / 2.0f;
 
 		Shapes::Triangle tri;
-		tri.setPointA(pos + glm::vec3(-radius.x, radius.y, 0.0f));
-		tri.setPointB(pos + glm::vec3(-radius.x, -radius.y, 0.0f));
-		tri.setPointC(pos + glm::vec3(radius.x, -radius.y, 0.0f));
-		if (!flipFace) tri.flipSequence();
-		tri.computeNormal();
-		tri.setMaterialIndex(mat);
-		tri.addToScene(&scene);
+		tri.SetPointA(pos + glm::vec3(-radius.x, radius.y, 0.0f));
+		tri.SetPointB(pos + glm::vec3(-radius.x, -radius.y, 0.0f));
+		tri.SetPointC(pos + glm::vec3(radius.x, -radius.y, 0.0f));
+		if (!flipFace) tri.FlipSequence();
+		tri.ComputeNormal();
+		tri.SetMaterialIndex(mat);
+		tri.AddToScene(&m_scene);
 
-		tri.setPointA(pos + glm::vec3(-radius.x, radius.y, 0.0f));
-		tri.setPointB(pos + glm::vec3(radius.x, radius.y, 0.0f));
-		tri.setPointC(pos + glm::vec3(radius.x, -radius.y, 0.0f));
-		if (flipFace) tri.flipSequence();
-		tri.computeNormal();
-		tri.setMaterialIndex(mat);
-		tri.addToScene(&scene);
+		tri.SetPointA(pos + glm::vec3(-radius.x, radius.y, 0.0f));
+		tri.SetPointB(pos + glm::vec3(radius.x, radius.y, 0.0f));
+		tri.SetPointC(pos + glm::vec3(radius.x, -radius.y, 0.0f));
+		if (flipFace) tri.FlipSequence();
+		tri.ComputeNormal();
+		tri.SetMaterialIndex(mat);
+		tri.AddToScene(&m_scene);
 	}
 
 	void addCube(glm::vec3 pos, glm::vec3 scale)
@@ -886,137 +547,133 @@ private:
 		Shapes::Triangle tri;
 		// bottom square
 		{
-			tri.setPointA(-1.0f, -1.0f, -2.0f);
-			tri.setPointB(pos);
-			tri.setPointC(1.0f, -1.0f, 0.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, -1.0f, -2.0f);
+			tri.SetPointB(pos);
+			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, -1.0f, -2.0f);
-			tri.setPointB(1.0f, -1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, 0.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, -1.0f, -2.0f);
+			tri.SetPointB(1.0f, -1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		// top square
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(-1.0f, 1.0f, 0.0f);
-			tri.setPointC(1.0f, 1.0f, 0.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(-1.0f, 1.0f, 0.0f);
+			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(1.0f, 1.0f, -2.0f);
-			tri.setPointC(1.0f, 1.0f, 0.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(1.0f, 1.0f, -2.0f);
+			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		// left square
 		{
-			tri.setPointA(-1.0f, 1.0f, 0.0f);
-			tri.setPointB(-1.0f, -1.0f, 0.0f);
-			tri.setPointC(-1.0f, -1.0f, -2.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(1);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, 0.0f);
+			tri.SetPointB(-1.0f, -1.0f, 0.0f);
+			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(1);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, 1.0f, 0.0f);
-			tri.setPointB(-1.0f, 1.0f, -2.0f);
-			tri.setPointC(-1.0f, -1.0f, -2.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(1);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, 0.0f);
+			tri.SetPointB(-1.0f, 1.0f, -2.0f);
+			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(1);
+			tri.AddToScene(&m_scene);
 		}
 
 
 		// right square
 		{
-			tri.setPointA(1.0f, 1.0f, 0.0f);
-			tri.setPointB(1.0f, -1.0f, 0.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(2);
-			tri.addToScene(&scene);
+			tri.SetPointA(1.0f, 1.0f, 0.0f);
+			tri.SetPointB(1.0f, -1.0f, 0.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(2);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(1.0f, 1.0f, 0.0f);
-			tri.setPointB(1.0f, 1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(2);
-			tri.addToScene(&scene);
+			tri.SetPointA(1.0f, 1.0f, 0.0f);
+			tri.SetPointB(1.0f, 1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(2);
+			tri.AddToScene(&m_scene);
 		}
 
 
 		// forward square
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(-1.0f, -1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(-1.0f, -1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 
 		{
-			tri.setPointA(-1.0f, 1.0f, -2.0f);
-			tri.setPointB(1.0f, 1.0f, -2.0f);
-			tri.setPointC(1.0f, -1.0f, -2.0f);
-			//tri.flipSequence();
-			tri.computeNormal();
-			tri.setBsdfIndex(Basic);
-			tri.setMaterialIndex(0);
-			tri.addToScene(&scene);
+			tri.SetPointA(-1.0f, 1.0f, -2.0f);
+			tri.SetPointB(1.0f, 1.0f, -2.0f);
+			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			//tri.FlipSequence();
+			tri.ComputeNormal();
+			tri.SetBsdfIndex(Basic);
+			tri.SetMaterialIndex(0);
+			tri.AddToScene(&m_scene);
 		}
 	}
 private:
-	TTG::Timer t;
-	TTG::Timer tick;
-	TTG::Camera camera;
-	TTG::Config config;
+	TTG::Timer m_t;
+	TTG::Timer m_tick;
+	TTG::Camera m_camera;
+	TTG::Config m_config;
 
-	bool viewPortOpen = true;
-	bool editorOpen = true;
-
-	bool selected = false;
-	HitType sType = HitType::UNKNOWN;
-	int sIndex = -1;
+	bool m_viewPortOpen = true;
+	bool m_editorOpen = true;
 
 	static bool docking;
-	Renderer renderer;
-	Scene scene;
+	Renderer m_renderer;
+	Scene m_scene;
 
 	GLFWwindow* m_handle;
 };
@@ -1026,6 +683,6 @@ bool ExampleLayer::docking = true;
 TTG::Application* createApplication()
 {
 	TTG::Application* app = new TTG::Application;
-	app->pushLayer<ExampleLayer>();
+	app->PushLayer<ExampleLayer>();
 	return app;
 }

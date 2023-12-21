@@ -39,7 +39,7 @@ namespace TTG
 			return { Vec3(min, max, seed), Float(min, max, seed) };
 		}
 
-		static glm::vec3 inUnitSphere(unsigned int& seed)
+		static glm::vec3 InUnitSphere(unsigned int& seed)
 		{
 			return glm::normalize(Vec3(-1.0f, 1.0f, seed));
 		}
@@ -52,7 +52,7 @@ namespace TTG
 #define USEMT19937 0
 #if USEMT19937
             std::uniform_real_distribution<> dist(min, max);
-            return dist(gen);
+            return dist(m_gen);
 #else
 			return (((float)rand() / (float)RAND_MAX)) * (max - min) + min;
 #endif
@@ -68,12 +68,12 @@ namespace TTG
 			return { Vec3(min, max), Float(min, max) };
 		}
 
-		static glm::vec3 inUnitSphere()
+		static glm::vec3 InUnitSphere()
 		{
 			return glm::normalize(Vec3(-1.0f, 1.0f));
 		}
     private:
-        static std::random_device rd;
-        static std::mt19937 gen;
+        static std::random_device m_rd;
+        static std::mt19937 m_gen;
 	};
 }

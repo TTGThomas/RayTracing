@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="TTG\src\Utils\Random.cpp" />
+    <ClCompile Include="TTG_app\shapes\Sphere.cpp" />
     <ClCompile Include="TTG_app\Materials\GlassBsdf.cpp" />
     <ClCompile Include="TTG_app\Materials\TestBsdf.cpp" />
     <ClCompile Include="TTG_app\Materials\BasicBsdf.cpp" />
@@ -158,6 +160,12 @@
     <ClCompile Include="TTG_app\Example.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TTG_app\Hittables\HitPlane.h" />
+    <ClInclude Include="TTG_app\Hittables\HitSphere.h" />
+    <ClInclude Include="TTG_app\Hittables\HittableBase.h" />
+    <ClInclude Include="TTG_app\Hittables\HitTriangle.h" />
+    <ClInclude Include="TTG_app\Hittables\Scene.h" />
+    <ClInclude Include="TTG_app\shapes\Sphere.h" />
     <ClInclude Include="TTG_app\Materials\GlassBsdf.h" />
     <ClInclude Include="TTG_app\Materials\TestBsdf.h" />
     <ClInclude Include="TTG_app\Materials.h" />

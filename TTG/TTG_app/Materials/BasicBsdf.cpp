@@ -1,23 +1,20 @@
 #include "BasicBsdf.h"
 
-void BasicBsdf::processHit(BsdfPayload payload, Ray* ray)
+void BasicBsdf::ProcessHit(BsdfPayload& payload, Ray* ray)
 {
-	HitPayload hit = payload.payload;
-	Material mat = payload.mat;
-	glm::vec3 preCalculateRand;
-    preCalculateRand = TTG::Random::inUnitSphere();
+	HitPayload hit = payload.m_payload;
+	Material mat = payload.m_mat;
 
-
-	bool fontFace = TTG::Math::dot(ray->Direction, hit.hitNormal) < 0.0f;
+	bool fontFace = TTG::Math::Dot(ray->m_direction, hit.m_hitNormal) < 0.0f;
 
 	if (!fontFace)
-		hit.hitNormal = -hit.hitNormal;
+		hit.m_hitNormal = -hit.m_hitNormal;
 
-	ray->Origin = hit.hitPos + (hit.hitNormal * 0.001f);
+	ray->m_origin = hit.m_hitPos + (hit.m_hitNormal * 0.001f);
 
-	glm::vec3 reflectDir = TTG::Math::normalize(glm::reflect(ray->Direction, hit.hitNormal));
+	glm::vec3 reflectDir = TTG::Math::Normalize(glm::reflect(ray->m_direction, hit.m_hitNormal));
 
-	glm::vec3 randomDir = TTG::Math::normalize(hit.hitNormal + preCalculateRand);
+	glm::vec3 randomDir = TTG::Math::Normalize(hit.m_hitNormal + TTG::Random::InUnitSphere());
 	
-	ray->Direction = (mat.roughness * randomDir) + ((1.0f - mat.roughness) * reflectDir);
+	ray->m_direction = (mat.m_roughness * randomDir) + ((1.0f - mat.m_roughness) * reflectDir);
 }

@@ -8,16 +8,16 @@ struct Triangle : public Hittable
 {
     Triangle()
     {
-        this->type = HIT_TYPES::TRIANGLE;
+        this->m_type = HitType::TRIANGLE;
     }
     
-    glm::vec3 PosA = glm::vec3(0.0f);
-    glm::vec3 PosB = glm::vec3(0.0f);
-    glm::vec3 PosC = glm::vec3(0.0f);
+    glm::vec3 m_posA = glm::vec3(0.0f);
+    glm::vec3 m_posB = glm::vec3(0.0f);
+    glm::vec3 m_posC = glm::vec3(0.0f);
 
-    glm::vec3 na = glm::vec3(0.0f);
-    glm::vec3 nb = glm::vec3(0.0f);
-    glm::vec3 nc = glm::vec3(0.0f);
+    glm::vec3 m_na = glm::vec3(0.0f);
+    glm::vec3 m_nb = glm::vec3(0.0f);
+    glm::vec3 m_nc = glm::vec3(0.0f);
     
     virtual float Hit(const Ray& ray) override
     {

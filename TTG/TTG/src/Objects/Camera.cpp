@@ -7,82 +7,82 @@ namespace TTG
 
 	Camera::Camera()
 	{
-		updateMatrix();
+		UpdateMatrix();
 	}
 
-	void Camera::updateMatrix()
+	void Camera::UpdateMatrix()
 	{
-		if (rotation.x > maxRotationX)
-			rotation.x = maxRotationX;
-		else if (rotation.x < -maxRotationX)
-			rotation.x = -maxRotationX;
+		if (m_rotation.x > m_maxRotationX)
+			m_rotation.x = m_maxRotationX;
+		else if (m_rotation.x < -m_maxRotationX)
+			m_rotation.x = -m_maxRotationX;
 
-		if (rotation.y > 360.0f)
-			rotation.y -= 360.0f;
+		if (m_rotation.y > 360.0f)
+			m_rotation.y -= 360.0f;
 
-		if (rotation.y < -360.0f)
-			rotation.y += 360.0f;
+		if (m_rotation.y < -360.0f)
+			m_rotation.y += 360.0f;
 
 		glm::vec3 direction;
-		direction.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-		direction.y = sin(glm::radians(rotation.x));
-		direction.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-		cameraFront = Math::normalize(direction);
+		direction.x = cos(glm::radians(m_rotation.y)) * cos(glm::radians(m_rotation.x));
+		direction.y = sin(glm::radians(m_rotation.x));
+		direction.z = sin(glm::radians(m_rotation.y)) * cos(glm::radians(m_rotation.x));
+		m_cameraFront = Math::Normalize(direction);
 
-		cameraRight = Math::normalize(Math::cross(cameraFront, worldUp));
-		cameraUp = Math::normalize(Math::cross(cameraRight, cameraFront));
+		m_cameraRight = Math::Normalize(Math::Cross(m_cameraFront, m_worldUp));
+		m_cameraUp = Math::Normalize(Math::Cross(m_cameraRight, m_cameraFront));
 
-		front = Math::normalize(glm::vec3(direction.x, 0.0f, direction.z));
-		right = Math::normalize(Math::cross(front, worldUp));
+		m_front = Math::Normalize(glm::vec3(direction.x, 0.0f, direction.z));
+		m_right = Math::Normalize(Math::Cross(m_front, m_worldUp));
 	}
 
-	glm::mat4 Camera::getView()
+	glm::mat4 Camera::GetView()
 	{
-		return glm::lookAt(position, position + cameraFront, cameraUp);
+		return glm::lookAt(m_position, m_position + m_cameraFront, m_cameraUp);
 	}
 
-	glm::mat4 Camera::getInverseView()
+	glm::mat4 Camera::GetInverseView()
 	{
-		return glm::inverse(getView());
+		return glm::inverse(GetView());
 	}
 
-	glm::mat4 Camera::getProjection(const Config& config) const
+	glm::mat4 Camera::GetProjection(const Config& config) const
 	{
-		return glm::perspective(zoom, config.screenWidth / config.screenHeight, 0.1f, 100.0f);
+		return glm::perspective(m_zoom, config.screenWidth / config.screenHeight, 0.1f, 100.0f);
 	}
 
-	glm::mat4 Camera::getInverseProjection(const Config& config) const
+	glm::mat4 Camera::GetInverseProjection(const Config& config) const
 	{
-		return glm::inverse(getProjection(config));
+		return glm::inverse(GetProjection(config));
 	}
 
-	void Camera::addPosition(const DIRECTION& dir, const Config& config)
+	void Camera::AddPosition(const DIRECTION& dir, const Config& config)
 	{
-		float add = speed * config.delta;
+		float add = m_speed * config.delta;
 		switch (dir)
 		{
 		case DIRECTION::FORWARD:
-			position += cameraFront * add;
+			m_position += m_cameraFront * add;
 			break;
 
 		case DIRECTION::BACKWARD:
-			position -= cameraFront * add;
+			m_position -= m_cameraFront * add;
 			break;
 
 		case DIRECTION::LEFT:
-			position -= cameraRight * add;
+			m_position -= m_cameraRight * add;
 			break;
 
 		case DIRECTION::RIGHT:
-			position += cameraRight * add;
+			m_position += m_cameraRight * add;
 			break;
 
 		case DIRECTION::UP:
-			position -= worldUp * add;
+			m_position -= m_worldUp * add;
 			break;
 
 		case DIRECTION::DOWN:
-			position += worldUp * add;
+			m_position += m_worldUp * add;
 			break;
 
 		default:
@@ -90,12 +90,12 @@ namespace TTG
 		}
 	}
 
-	bool Camera::update(Config& config)
+	bool Camera::Update(Config& config)
 	{
-		if (rayDirections.size() == 0)
+		if (m_rayDirections.size() == 0)
 		{
-			updateMatrix();
-			reCalculateRayDirections(config);
+			UpdateMatrix();
+			ReCalculateRayDirections(config);
 			return true;
 		}
 		if (!ImGui::IsMouseDown(ImGuiMouseButton_Right))
@@ -104,7 +104,7 @@ namespace TTG
 			return false;
 		}
 
-		moved = false;
+		m_moved = false;
 
 		if (isFirst)
 		{
@@ -119,50 +119,50 @@ namespace TTG
 
 		oldMousePos = ImGui::GetMousePos();
 
-		rotation.x += mousePos.y * 0.5f;
-		rotation.y += mousePos.x * 0.5f;
+		m_rotation.x += mousePos.y * 0.5f;
+		m_rotation.y += mousePos.x * 0.5f;
 
 		if (mousePos != glm::vec2(0.0f))
-			moved = true;
+			m_moved = true;
 
 		if (ImGui::IsKeyDown(ImGuiKey_W))
 		{
-			moved = true;
-			addPosition(DIRECTION::FORWARD, config);
+			m_moved = true;
+			AddPosition(DIRECTION::FORWARD, config);
 		}
 		if (ImGui::IsKeyDown(ImGuiKey_S))
 		{
-			moved = true;
-			addPosition(DIRECTION::BACKWARD, config);
+			m_moved = true;
+			AddPosition(DIRECTION::BACKWARD, config);
 		}
 		if (ImGui::IsKeyDown(ImGuiKey_A))
 		{
-			moved = true;
-			addPosition(DIRECTION::LEFT, config);
+			m_moved = true;
+			AddPosition(DIRECTION::LEFT, config);
 		}
 		if (ImGui::IsKeyDown(ImGuiKey_D))
 		{
-			moved = true;
-			addPosition(DIRECTION::RIGHT, config);
+			m_moved = true;
+			AddPosition(DIRECTION::RIGHT, config);
 		}
 		if (ImGui::IsKeyDown(ImGuiKey_E))
 		{
-			moved = true;
-			addPosition(DIRECTION::UP, config);
+			m_moved = true;
+			AddPosition(DIRECTION::UP, config);
 		}
 		if (ImGui::IsKeyDown(ImGuiKey_Q))
 		{
-			moved = true;
-			addPosition(DIRECTION::DOWN, config);
+			m_moved = true;
+			AddPosition(DIRECTION::DOWN, config);
 		}
 
-		updateMatrix();
-		return moved;
+		UpdateMatrix();
+		return m_moved;
 	}
 
-	void Camera::reCalculateRayDirections(const Config& config)
+	void Camera::ReCalculateRayDirections(const Config& config)
 	{
-		rayDirections.resize((size_t)config.screenWidth * (size_t)config.screenHeight);
+		m_rayDirections.resize((size_t)config.screenWidth * (size_t)config.screenHeight);
 
 		for (int y = 0; y < config.screenHeight; y++)
 		{
@@ -171,22 +171,22 @@ namespace TTG
 				glm::vec2 coord = { (float)x / config.screenWidth, (float)y / config.screenHeight };
 				coord = coord * 2.0f - 1.0f;
 
-				glm::vec4 target = getInverseProjection(config) * glm::vec4(coord.x, coord.y, 1, 1);
+				glm::vec4 target = GetInverseProjection(config) * glm::vec4(coord.x, coord.y, 1, 1);
 				glm::vec3 rayDirection =
-					glm::vec3(getInverseView() * glm::vec4(Math::normalize(glm::vec3(target) / target.w),
+					glm::vec3(GetInverseView() * glm::vec4(Math::Normalize(glm::vec3(target) / target.w),
 						0)); // world space
-				rayDirections[(size_t)y * (size_t)config.screenWidth + (size_t)x] = rayDirection;
+				m_rayDirections[(size_t)y * (size_t)config.screenWidth + (size_t)x] = rayDirection;
 			}
 		}
 	}
-	void Camera::reCalculateRayDirections(const Config& config, int x, int y)
+	void Camera::ReCalculateRayDirections(const Config& config, int x, int y)
 	{
 		glm::vec2 coord = { (float)x / config.screenWidth, (float)y / config.screenHeight };
 		coord = coord * 2.0f - 1.0f;
 
-		glm::vec4 target = getInverseProjection(config) * glm::vec4(coord.x, coord.y, 1, 1);
+		glm::vec4 target = GetInverseProjection(config) * glm::vec4(coord.x, coord.y, 1, 1);
 		glm::vec3 rayDirection =
-			glm::vec3(getInverseView() * glm::vec4(Math::normalize(glm::vec3(target) / target.w), 0)); // world space
-		rayDirections[(size_t)y * (size_t)config.screenWidth + (size_t)x] = rayDirection;
+			glm::vec3(GetInverseView() * glm::vec4(Math::Normalize(glm::vec3(target) / target.w), 0)); // world space
+		m_rayDirections[(size_t)y * (size_t)config.screenWidth + (size_t)x] = rayDirection;
 	}
 }

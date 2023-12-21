@@ -8,11 +8,11 @@ struct Sphere : public Hittable
 {
     Sphere()
     {
-        this->type = HIT_TYPES::SPHERE;
+        this->m_type = HitType::SPHERE;
     }
 
-    glm::vec3 Position = glm::vec3(0.0f);
-    float radius = 1.0f;
+    glm::vec3 m_position = glm::vec3(0.0f);
+    float m_radius = 1.0f;
     
     virtual float Hit(const Ray& ray) override
     {

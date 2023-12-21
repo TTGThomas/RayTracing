@@ -2,7 +2,7 @@
 
 namespace TTG
 {
-	void Texture::loadTextureFromFile(std::string filePath)
+	void Texture::LoadTextureFromFile(std::string filePath)
 	{
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -40,7 +40,7 @@ namespace TTG
 		stbi_image_free(data);
 	}
 
-	void Texture::loadTextureFromData(unsigned char* data, int nChannels, int width, int height)
+	void Texture::LoadTextureFromData(unsigned char* data, int nChannels, int width, int height)
 	{
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION

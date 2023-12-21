@@ -2,7 +2,7 @@
 
 namespace TTG
 {
-	void Application::init()
+	void Application::Init()
 	{
 		if (!glfwInit())
 			return;
@@ -43,11 +43,11 @@ namespace TTG
 		m_io->Fonts->AddFontDefault();
 	}
 
-	void Application::cleanup()
+	void Application::Cleanup()
 	{
 		for (int i = 0; i < m_layers.size(); i++)
 		{
-			m_layers[i]->onDetach();
+			m_layers[i]->OnDetach();
 		}
 
 		m_layers.clear();
@@ -59,11 +59,11 @@ namespace TTG
 		glfwTerminate();
 	}
 
-	void Application::run()
+	void Application::Run()
 	{
 		for (std::shared_ptr<Layer> layer : m_layers)
 		{
-			layer->onAttach(m_window);
+			layer->OnAttach(m_window);
 		}
 
 		while (!glfwWindowShouldClose(m_window))
@@ -78,8 +78,8 @@ namespace TTG
 			// run clients tick
 			for (int i = 0; i < m_layers.size(); i++)
 			{
-				m_layers[i]->onTick();
-				m_layers[i]->onUIRender(i);
+				m_layers[i]->OnTick();
+				m_layers[i]->OnUIRender(i);
 			}
 
 			// render
@@ -103,7 +103,7 @@ namespace TTG
 		}
 	}
 
-	bool Application::programRunning()
+	bool Application::IsProgramRunning()
 	{
 		return !glfwWindowShouldClose(m_window);
 	}

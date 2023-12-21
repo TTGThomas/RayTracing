@@ -11,27 +11,27 @@ namespace TTG
 	class Application
 	{
 	public:
-		void init();
-		void cleanup();
+		void Init();
+		void Cleanup();
 
-		void run();
+		void Run();
 
 		template<typename T>
-		void pushLayer()
+		void PushLayer()
 		{
 			static_assert(std::is_base_of<Layer, T>::value, "Layer pushed in is not a Layer");
 			m_layers.emplace_back(std::make_shared<T>());
 		}
 
-		bool programRunning();
+		bool IsProgramRunning();
 
-		void stop()
+		void Stop()
 		{
 			glfwSetWindowShouldClose(m_window, true);
 		}
 
-		GLFWwindow* getInstance() { return m_window; };
-		ImGuiIO* getIO() { return m_io; };
+		GLFWwindow* GetInstance() { return m_window; };
+		ImGuiIO* GetIO() { return m_io; };
 	private:
 		GLFWwindow* m_window;
 		ImGuiIO* m_io;

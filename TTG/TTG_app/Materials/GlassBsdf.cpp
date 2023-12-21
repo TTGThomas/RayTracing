@@ -1,50 +1,50 @@
 #include "GlassBsdf.h"
 
-void GlassBsdf::processHit(BsdfPayload payload, Ray* ray)
+void GlassBsdf::ProcessHit(BsdfPayload& payload, Ray* ray)
 {
-	HitPayload hit = payload.payload;
+	HitPayload& hit = payload.m_payload;
     
-    ray->Direction = TTG::Math::normalize(ray->Direction);
+    ray->m_direction = TTG::Math::Normalize(ray->m_direction);
     
     bool frontFace;
-	if (TTG::Math::dot(ray->Direction, hit.hitNormal) > 0.0f)
+	if (TTG::Math::Dot(ray->m_direction, hit.m_hitNormal) > 0.0f)
 	{
-        ray->Origin = hit.hitPos + (hit.hitNormal * 0.001f);
-        hit.hitNormal = -hit.hitNormal;
+        ray->m_origin = hit.m_hitPos + (hit.m_hitNormal * 0.001f);
+        hit.m_hitNormal = -hit.m_hitNormal;
         frontFace = false;
 	}
 	else
 	{
-        ray->Origin = hit.hitPos - (hit.hitNormal * 0.001f);
+        ray->m_origin = hit.m_hitPos - (hit.m_hitNormal * 0.001f);
         frontFace = true;
 	}
 
-	float refractRatio = frontFace ? (1.0f / reflectIndex) : reflectIndex;
+	float refractRatio = frontFace ? (1.0f / m_reflectIndex) : m_reflectIndex;
 	
-	ray->Direction = refract(*ray, hit, refractRatio);
+	ray->m_direction = Refract(*ray, hit, refractRatio);
 
-	//float cos_theta = std::fmin(TTG::Math::dot(-ray->Direction, hit.hitNormal), 1.0f);
-	//float sin_theta = TTG::Math::sqrt(1.0f - (cos_theta * cos_theta));
-	//if (refractRatio * sin_theta > 1.0f || reflectance(cos_theta, refractRatio) > TTG::Random::Float(0.0f, 1.0f))
-	//	ray->Direction = glm::reflect(ray->Direction, hit.hitNormal);
-	//else
-	//	ray->Direction = refract(*ray, hit, refractRatio);
+	float cos_theta = std::fmin(TTG::Math::Dot(-ray->m_direction, hit.m_hitNormal), 1.0f);
+	float sin_theta = TTG::Math::Sqrt(1.0f - (cos_theta * cos_theta));
+	if (refractRatio * sin_theta > 1.0f || Reflectance(cos_theta, refractRatio) > TTG::Random::Float(0.0f, 1.0f))
+		ray->m_direction = glm::reflect(ray->m_direction, hit.m_hitNormal);
+	else
+		ray->m_direction = Refract(*ray, hit, refractRatio);
 }
 
-void GlassBsdf::advanceSetting()
+void GlassBsdf::AdvanceSettings()
 {
-	ImGui::DragFloat("reflect index", &reflectIndex, 0.01f, 1.0f, 5.0f);
+	ImGui::DragFloat("reflection index", &m_reflectIndex, 0.01f, 1.0f, 5.0f);
 }
 
-glm::vec3 GlassBsdf::refract(Ray ray, HitPayload payload, float refractRatio)
+glm::vec3 GlassBsdf::Refract(Ray& ray, HitPayload& payload, float refractRatio)
 {
-	float cos_theta = std::fmin(TTG::Math::dot(-ray.Direction, payload.hitNormal), 1.0f);
-	glm::vec3 perp = refractRatio * (ray.Direction + cos_theta * payload.hitNormal);
-	glm::vec3 para = -TTG::Math::sqrt(std::fabs(1.0f - TTG::Math::dot(perp, perp))) * payload.hitNormal;
+	float cos_theta = std::fmin(TTG::Math::Dot(-ray.m_direction, payload.m_hitNormal), 1.0f);
+	glm::vec3 perp = refractRatio * (ray.m_direction + cos_theta * payload.m_hitNormal);
+	glm::vec3 para = -TTG::Math::Sqrt(std::fabs(1.0f - TTG::Math::Dot(perp, perp))) * payload.m_hitNormal;
 	return perp + para;
 }
 
-float GlassBsdf::reflectance(float cosine, float refractionRatio)
+float GlassBsdf::Reflectance(float cosine, float refractionRatio)
 {
 	float r0 = (1.0f - refractionRatio) / (1.0f + refractionRatio);
 	r0 = r0 * r0;

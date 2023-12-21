@@ -72,6 +72,12 @@
     <ClCompile Include="TTG_app\Materials\GlassBsdf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TTG_app\shapes\Sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TTG\src\Utils\Random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TTG\src\Layer.h">
@@ -162,6 +168,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TTG_app\Materials\GlassBsdf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\shapes\Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\Hittables\HitPlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\Hittables\HitSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\Hittables\HittableBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\Hittables\HitTriangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\Hittables\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

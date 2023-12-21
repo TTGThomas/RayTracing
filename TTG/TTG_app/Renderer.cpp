@@ -5,7 +5,7 @@
 
 #include <vector>
 
-glm::vec<4, unsigned char> Renderer::convertToChar(glm::vec4 color)
+glm::vec<4, unsigned char> Renderer::ConvertToChar(glm::vec4 color)
 {
 	unsigned char r = color.r * 255.0f;
 	unsigned char g = color.g * 255.0f;
@@ -14,7 +14,7 @@ glm::vec<4, unsigned char> Renderer::convertToChar(glm::vec4 color)
 	return { r, g, b, a};
 }
 
-bool Renderer::onResize()
+bool Renderer::OnResize()
 {
 	if (m_imageData == nullptr || m_width != ImGui::GetWindowWidth() || m_height != ImGui::GetWindowHeight() - 60.0f || m_frameIndex == 0)
 	{
@@ -47,7 +47,7 @@ bool Renderer::onResize()
 	return false;
 }
 
-void Renderer::render(TTG::Config& config)
+void Renderer::Render(TTG::Config& config)
 {
 	m_frameIndex++;
 #define mt 0
@@ -93,22 +93,12 @@ void Renderer::render(TTG::Config& config)
     auto xTick = [this, config](int y) {
         for (unsigned int x = 0; x < m_width; x++)
         {
-            if (m_activateCamera->getMoved() || getFrameIndex() == 1)
+            if (m_activateCamera->GetMoved() || GetFrameIndex() == 1)
             {
-                m_activateCamera->reCalculateRayDirections(config, x, y);
+                m_activateCamera->ReCalculateRayDirections(config, x, y);
             }
-
-            //if (slowRandom)
-            //{
-            //    preCalculateRandom = TTG::Random::inUnitSphere();
-            //}
-            //else
-            //{
-            //    unsigned int seed = (y * m_width + x) * m_frameIndex;
-            //    preCalculateRandom = TTG::Random::inUnitSphere(seed);
-            //}
             
-            glm::vec4 pixelColor = perPixel(x, y);
+            glm::vec4 pixelColor = PerPixel(x, y);
             if (m_accumulate)
             {
                 m_accumulateData[y * m_width + x] += pixelColor;
@@ -116,7 +106,7 @@ void Renderer::render(TTG::Config& config)
                 pixelColor = accumulateColor;
             }
             pixelColor = glm::clamp(pixelColor, glm::vec4(0.0f), glm::vec4(1.0f));
-            glm::vec<4, unsigned char> inColor = convertToChar(pixelColor);
+            glm::vec<4, unsigned char> inColor = ConvertToChar(pixelColor);
             // map to image data
 
             m_imageData[(y * m_width + x) * 4 + 0] = inColor.r;
@@ -137,37 +127,37 @@ void Renderer::render(TTG::Config& config)
 #endif
 }
 
-HitPayload Renderer::traceRay(Ray ray)
+HitPayload Renderer::TraceRay(Ray ray)
 {
 	HitPayload hits[3];
-	hits[0] = traceSpheres(ray);
-	hits[1] = tracePlanes(ray);
-	hits[2] = traceTriangles(ray);
+	hits[0] = TraceSpheres(ray);
+	hits[1] = TracePlanes(ray);
+	hits[2] = TraceTriangles(ray);
 	int index = 0;
 	for (int i = 0; i < 3; i++)
-		if (hits[i].hasHit)
-			if (hits[i].hitDistance < hits[index].hitDistance || !hits[index].hasHit)
+		if (hits[i].m_hasHit)
+			if (hits[i].m_hitDistance < hits[index].m_hitDistance || !hits[index].m_hasHit)
 				index = i;
 	return hits[index];
 }
 
-HitPayload Renderer::traceSpheres(Ray ray)
+HitPayload Renderer::TraceSpheres(Ray ray)
 {
 	int index = -1;
 	float hitDistance = std::numeric_limits<float>::max();
-	for (int i = 0; i < m_activateScene->spheres.size(); i++)
+	for (int i = 0; i < m_activateScene->objects.size(); i++)
 	{
-		Sphere& sphere = m_activateScene->spheres[i];
-		if (!sphere.visible)
+		Sphere& sphere = m_activateScene->objects[i];
+		if (!sphere.m_visible)
 			continue;
 
 		glm::vec3 sphereOrigin;
-		sphereOrigin = sphere.Position;
+		sphereOrigin = sphere.m_position;
 		sphereOrigin.y = 0.0f - sphereOrigin.y;
 
-		float radius = sphere.radius;
+		float radius = sphere.m_radius;
 
-		glm::vec3 origin = ray.Origin - sphereOrigin;
+		glm::vec3 origin = ray.m_origin - sphereOrigin;
 
 		// origin formula = (x)^2 + (y)^2 = r^2
         
@@ -179,14 +169,14 @@ HitPayload Renderer::traceSpheres(Ray ray)
 
 		//float a = glm::dot(ray.Direction, ray.Direction);
 		float a = 1.0f;
-		float b = TTG::Math::dot(origin, ray.Direction);// b / 2
-		float c = TTG::Math::dot(origin, origin) - radius * radius;
+		float b = TTG::Math::Dot(origin, ray.m_direction);// b / 2
+		float c = TTG::Math::Dot(origin, origin) - radius * radius;
 
 		// Quad = b^2 - 4ac
 
 		float discriminant = (b * b) - (a * c);
 		// completes the quadratic equation
-        float closestT = (-b - TTG::Math::sqrt(discriminant)) / (a);
+        float closestT = (-b - TTG::Math::Sqrt(discriminant)) / (a);
 
 		if (closestT < hitDistance && closestT > 0.0f)
 		{
@@ -195,7 +185,7 @@ HitPayload Renderer::traceSpheres(Ray ray)
 		}
         else
         {
-            closestT = (-b + TTG::Math::sqrt(discriminant)) / (a);
+            closestT = (-b + TTG::Math::Sqrt(discriminant)) / (a);
             
             if (closestT < hitDistance && closestT > 0.0f)
             {
@@ -206,26 +196,26 @@ HitPayload Renderer::traceSpheres(Ray ray)
 	}
 
 	if (index < 0)
-		return miss();
+		return Miss();
 
-	return closestHit(ray, hitDistance, index, HitType::SPHERE);
+	return ClosestHit(ray, hitDistance, index, HitType::SPHERE);
 }
 
-HitPayload Renderer::tracePlanes(Ray ray)
+HitPayload Renderer::TracePlanes(Ray ray)
 {
 	int index = -1;
 	float hitDistance = std::numeric_limits<float>::max();
-	for (int i = 0; i < m_activateScene->planes.size(); i++)
+	for (int i = 0; i < m_activateScene->objects.size(); i++)
 	{
-		Plane& plane = m_activateScene->planes[i];
-		if (!plane.visible)
+		Plane& plane = m_activateScene->objects[i];
+		if (!plane.m_visible)
 			continue;
 
-		float denomanator = TTG::Math::dot(plane.normal, ray.Direction);
+		float denomanator = TTG::Math::Dot(plane.m_normal, ray.m_direction);
 		if (denomanator == 0)
 			continue;
 
-		float numerator = TTG::Math::dot(plane.normal, plane.Position * glm::vec3(1.0f, -1.0f, 1.0f)) - glm::dot(plane.normal, ray.Origin);
+		float numerator = TTG::Math::Dot(plane.m_normal, plane.m_position * glm::vec3(1.0f, -1.0f, 1.0f)) - TTG::Math::Dot(plane.m_normal, ray.m_origin);
 
 		float closestT = numerator / denomanator;
 		if (closestT < hitDistance && closestT > 0.0f)
@@ -236,45 +226,45 @@ HitPayload Renderer::tracePlanes(Ray ray)
 	}
 
 	if (index < 0)
-		return miss();
+		return Miss();
 
-	return closestHit(ray, hitDistance, index, HitType::PLANE);
+	return ClosestHit(ray, hitDistance, index, HitType::PLANE);
 }
 
-HitPayload Renderer::traceTriangles(Ray ray)
+HitPayload Renderer::TraceTriangles(Ray ray)
 {
 	int index = -1;
 	float hitDistance = FLT_MAX;
 	float retU = 0;
 	float retV = 0;
 	float retW = 0;
-	for (int i = 0; i < m_activateScene->triangles.size(); i++)
+	for (int i = 0; i < m_activateScene->objects.size(); i++)
 	{
-		Triangle& tri = m_activateScene->triangles[i];
-		if (!tri.visible)
+		Triangle& tri = m_activateScene->objects[i];
+		if (!tri.m_visible)
 			continue;
 
-		glm::vec3 a = tri.PosA;
+		glm::vec3 a = tri.m_posA;
 		a.y = 0.0f - a.y;
 
-		glm::vec3 b = tri.PosB;
+		glm::vec3 b = tri.m_posB;
 		b.y = 0.0f - b.y;
 
-		glm::vec3 c = tri.PosC;
+		glm::vec3 c = tri.m_posC;
 		c.y = 0.0f - c.y;
 
 		glm::vec3 edgeAB = b - a;
 		glm::vec3 edgeAC = c - a;
-		glm::vec3 normalVector = TTG::Math::cross(edgeAB, edgeAC);
-		glm::vec3 ao = ray.Origin - a;
-		glm::vec3 dao = TTG::Math::cross(ao, ray.Direction);
+		glm::vec3 normalVector = TTG::Math::Cross(edgeAB, edgeAC);
+		glm::vec3 ao = ray.m_origin- a;
+		glm::vec3 dao = TTG::Math::Cross(ao, ray.m_direction);
 
-		float determinant = -TTG::Math::dot(ray.Direction, normalVector);
+		float determinant = -TTG::Math::Dot(ray.m_direction, normalVector);
 		float invDet = 1 / determinant;
 
-		float dst = TTG::Math::dot(ao, normalVector) * invDet;
-		float u = TTG::Math::dot(edgeAC, dao) * invDet;
-		float v = -TTG::Math::dot(edgeAB, dao) * invDet;
+		float dst = TTG::Math::Dot(ao, normalVector) * invDet;
+		float u = TTG::Math::Dot(edgeAC, dao) * invDet;
+		float v = -TTG::Math::Dot(edgeAB, dao) * invDet;
 		float w = 1 - u - v;
 
 		bool hasHit = determinant >= 0.0001f && dst >= 0 && u >= 0 && v >= 0 && w >= 0;
@@ -293,48 +283,48 @@ HitPayload Renderer::traceTriangles(Ray ray)
 	}
 
 	if (index == -1)
-		return miss();
+		return Miss();
 
-	Triangle& tri = m_activateScene->triangles[index];
+	Triangle& tri = m_activateScene->objects[index];
 
 	HitPayload payload;
-	payload.hasHit = true;
-	payload.hitPos = ray.Origin + (ray.Direction * hitDistance);
-	payload.hitNormal = TTG::Math::normalize(tri.na * retW + tri.nb * retU + tri.nc * retV);
-	payload.hitDistance = hitDistance;
-	payload.hitType = HitType::TRIANGLE;
-	payload.hitIndex = index;
+	payload.m_hasHit = true;
+	payload.m_hitPos = ray.m_origin + (ray.m_direction * hitDistance);
+	payload.m_hitNormal = TTG::Math::Normalize(tri.m_na * retW + tri.m_nb * retU + tri.m_nc * retV);
+	payload.m_hitDistance = hitDistance;
+	payload.m_hitType = HitType::TRIANGLE;
+	payload.m_hitIndex = index;
 	return payload;
 }
 
-HitPayload Renderer::closestHit(Ray ray, float t, int index, HitType hitType)
+HitPayload Renderer::ClosestHit(Ray ray, float t, int index, HitType hitType)
 {
 	HitPayload payload;
-	payload.hitType = hitType;
-	payload.hitDistance = t;
-	payload.hasHit = true;
-	payload.hitIndex = index;
+	payload.m_hitType = hitType;
+	payload.m_hitDistance = t;
+	payload.m_hasHit = true;
+	payload.m_hitIndex = index;
 
 	switch (hitType)
 	{
 	case HitType::SPHERE:
         {
-            glm::vec3 sphereOrigin = m_activateScene->spheres[index].Position;
+            glm::vec3 sphereOrigin = m_activateScene->objects[index].m_position;
             sphereOrigin.y = 0.0f - sphereOrigin.y;
-            glm::vec3 origin = ray.Origin - sphereOrigin;
+            glm::vec3 origin = ray.m_origin - sphereOrigin;
             
-            glm::vec3 hitPoint = origin + (ray.Direction * t);
-            glm::vec3 normal = TTG::Math::normalize(hitPoint);
+            glm::vec3 hitPoint = origin + (ray.m_direction * t);
+            glm::vec3 normal = TTG::Math::Normalize(hitPoint);
             hitPoint += sphereOrigin;
             
-            payload.hitNormal = normal;
-            payload.hitPos = hitPoint;
+            payload.m_hitNormal = normal;
+            payload.m_hitPos = hitPoint;
         }
 		break;
 	case HitType::PLANE:
         {
-            payload.hitNormal = -m_activateScene->planes[index].normal;
-            payload.hitPos = ray.Origin + (ray.Direction * t);
+            payload.m_hitNormal = -m_activateScene->objects[index].m_normal;
+            payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
         }
 		break;
 	default:
@@ -345,29 +335,29 @@ HitPayload Renderer::closestHit(Ray ray, float t, int index, HitType hitType)
 	return payload;
 }
 
-HitPayload Renderer::miss()
+HitPayload Renderer::Miss()
 {
 	HitPayload payload;
-	payload.hasHit = false;
-	payload.hitDistance = -FLT_MAX;
-	payload.hitIndex = -1;
+	payload.m_hasHit = false;
+	payload.m_hitDistance = -FLT_MAX;
+	payload.m_hitIndex = -1;
 	return payload;
 }
 
-glm::vec4 Renderer::perPixel(int x, int y)
+glm::vec4 Renderer::PerPixel(int x, int y)
 {
 	//return glm::vec4((float)x / (float)m_width, (float)y / (float)m_height, 0.0f, 1.0f);
 
 	Ray ray;
-	ray.Origin = m_activateCamera->position;
-	ray.Direction = m_activateCamera->rayDirections[y * m_width + x];
+	ray.m_origin = m_activateCamera->m_position;
+	ray.m_direction = m_activateCamera->m_rayDirections[y * m_width + x];
 
-    if (useDistBlur)
+    if (m_useDistBlur)
     {
-        glm::vec3 point = ray.Origin + ray.Direction * distBlur;
-        ray.Origin += TTG::Random::inUnitSphere() * 2.0f;
-        ray.Direction = point - ray.Origin;
-        ray.Direction = TTG::Math::normalize(ray.Direction);
+        glm::vec3 point = ray.m_origin + ray.m_direction * m_distBlur;
+        ray.m_origin += TTG::Random::InUnitSphere() * 2.0f;
+        ray.m_direction = point - ray.m_origin;
+        ray.m_direction = TTG::Math::Normalize(ray.m_direction);
     }
 
 	//unsigned int seed = (y * m_width + x) * m_frameIndex;
@@ -379,27 +369,27 @@ glm::vec4 Renderer::perPixel(int x, int y)
 	for (int i = 0; i < bounces; i++)
 	{
 		//seed += i;
-		HitPayload hit = traceRay(ray);
-		if (!hit.hasHit)
+		HitPayload hit = TraceRay(ray);
+		if (!hit.m_hasHit)
 		{
 			glm::vec3 skyColor = { 0.6f, 0.7f, 0.9f };
-			if (skyLight)
+			if (m_skyLight)
 				light += skyColor * contribution;
 			break;
 		}
 		Material mat;
-		if (hit.hitType == HitType::SPHERE)
-			mat = m_activateScene->mat[m_activateScene->spheres[hit.hitIndex].matIndex];
-		else if (hit.hitType == HitType::PLANE)
-			mat = m_activateScene->mat[m_activateScene->planes[hit.hitIndex].matIndex];
-		else if (hit.hitType == HitType::TRIANGLE)
-			mat = m_activateScene->mat[m_activateScene->triangles[hit.hitIndex].matIndex];
+		if (hit.m_hitType == HitType::SPHERE)
+			mat = m_activateScene->mat[m_activateScene->objects[hit.m_hitIndex].m_matIndex];
+		else if (hit.m_hitType == HitType::PLANE)
+			mat = m_activateScene->mat[m_activateScene->objects[hit.m_hitIndex].m_matIndex];
+		else if (hit.m_hitType == HitType::TRIANGLE)
+			mat = m_activateScene->mat[m_activateScene->objects[hit.m_hitIndex].m_matIndex];
 		
 		glm::vec3 color = glm::vec3(0.0f);
 		//return mat.albedo;
-		color = mat.albedo;
+		color = mat.m_albedo;
 
-		glm::vec3 emission = mat.getEmission();
+		glm::vec3 emission = mat.GetEmission();
 		if (emission.x + emission.y + emission.z > 0.0f)
 		{
 			light += emission * contribution;
@@ -409,25 +399,24 @@ glm::vec4 Renderer::perPixel(int x, int y)
 
         int bsdfIndex = -1;
 
-		if (hit.hitType == HitType::SPHERE)
+		if (hit.m_hitType == HitType::SPHERE)
         {
-            bsdfIndex = m_activateScene->spheres[hit.hitIndex].bsdfIndex;
+            bsdfIndex = m_activateScene->objects[hit.m_hitIndex].m_bsdfIndex;
         }
-		else if (hit.hitType == HitType::PLANE)
+		else if (hit.m_hitType == HitType::PLANE)
         {
-            bsdfIndex = m_activateScene->planes[hit.hitIndex].bsdfIndex;
+            bsdfIndex = m_activateScene->objects[hit.m_hitIndex].m_bsdfIndex;
         }
-		else if (hit.hitType == HitType::TRIANGLE)
+		else if (hit.m_hitType == HitType::TRIANGLE)
         {
-            bsdfIndex = m_activateScene->triangles[hit.hitIndex].bsdfIndex;
+            bsdfIndex = m_activateScene->objects[hit.m_hitIndex].m_bsdfIndex;
         }
 
 		BsdfPayload t;
-		t.mat = mat;
-		t.payload = hit;
-		t.preCalculate = false;
+		t.m_mat = mat;
+		t.m_payload = hit;
 
-		m_activateScene->bsdf[bsdfIndex]->processHit(t, &ray);
+		m_activateScene->bsdf[bsdfIndex]->ProcessHit(t, &ray);
 	}
 	return glm::vec4(light, 1.0f);
 }

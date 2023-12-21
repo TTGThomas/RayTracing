@@ -8,17 +8,13 @@
 
 struct BsdfPayload
 {
-	HitPayload payload;
-
-	bool preCalculate = false;
-	glm::vec3 preCalculateRand = glm::vec3(0.0f);
-
-	Material mat;
+	HitPayload m_payload;
+	Material m_mat;
 };
 
 class Bsdf
 {
 public:
-	virtual void processHit(BsdfPayload payload, Ray* ray) {}
-	virtual void advanceSetting() {}
+	virtual void ProcessHit(BsdfPayload& payload, Ray* ray) {}
+	virtual void AdvanceSettings() {}
 };

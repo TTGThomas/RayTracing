@@ -7,12 +7,12 @@ namespace TTG
 {
 	namespace Math
 	{
-		inline float dot(glm::vec3 a, glm::vec3 b)
+		inline float Dot(glm::vec3 a, glm::vec3 b)
 		{
 			return a.x * b.x + a.y * b.y + a.z * b.z;
 		}
 
-		inline float sqrt(float in)
+		inline float Sqrt(float in)
 		{
 			return glm::sqrt(in);
 			//return glm::fastSqrt<float>(in);
@@ -36,17 +36,17 @@ namespace TTG
 			//return in * y;
 		}
 
-		inline float length(glm::vec3 in)
+		inline float Length(glm::vec3 in)
 		{
 			return sqrt(dot(in, in));
 		}
 
-		inline glm::vec3 normalize(glm::vec3 in)
+		inline glm::vec3 Normalize(glm::vec3 in)
 		{
 			return in / length(in);
 		}
 
-		inline glm::vec3 cross(glm::vec3 x, glm::vec3 y)
+		inline glm::vec3 Cross(glm::vec3 x, glm::vec3 y)
 		{
 			return glm::vec3(
 				x.y * y.z - y.y * x.z,

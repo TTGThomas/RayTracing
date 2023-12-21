@@ -21,37 +21,36 @@ public:
 	Renderer(Scene* scene, TTG::Camera* camera)
 		: m_activateScene(scene), m_activateCamera(camera) {}
 
-	bool onResize();
-	void render(TTG::Config& config);
+	bool OnResize();
+	void Render(TTG::Config& config);
 
-	void resetFrameIndex() { m_frameIndex = 0; }
+	void ResetFrameIndex() { m_frameIndex = 0; }
 
-	HitPayload traceRay(Ray ray);
-	HitPayload traceSpheres(Ray ray);
-	HitPayload tracePlanes(Ray ray);
-	HitPayload traceTriangles(Ray ray);
-	HitPayload closestHit(Ray ray, float t, int index, HitType hitType);
-	HitPayload miss();
+	HitPayload TraceRay(Ray ray);
+	HitPayload TraceSpheres(Ray ray);
+	HitPayload TracePlanes(Ray ray);
+	HitPayload TraceTriangles(Ray ray);
+	HitPayload ClosestHit(Ray ray, float t, int index, HitType hitType);
+	HitPayload Miss();
 
-	glm::vec4 perPixel(int x, int y);
+	glm::vec4 PerPixel(int x, int y);
 
-	glm::vec<4, unsigned char> convertToChar(glm::vec4 color);
+	glm::vec<4, unsigned char> ConvertToChar(glm::vec4 color);
 
-	TTG::Texture& getFinalImage() { return m_finalImage; }
-	unsigned char* getImageData() { return m_imageData; }
+	TTG::Texture& GetFinalImage() { return m_finalImage; }
+	unsigned char* GetImageData() { return m_imageData; }
 
-	unsigned int getWidth() { return m_width; }
-	unsigned int getHeight() { return m_height; }
+	unsigned int GetWidth() { return m_width; }
+	unsigned int GetHeight() { return m_height; }
 
-	int getFrameIndex() { return m_frameIndex; }
-	bool* getAccumulate() { return &m_accumulate; };
-	bool* getSlowRandom() { return &slowRandom; }
-    bool* getSkyLightSwitch() { return &skyLight; }
-    float* getDistBlur() { return &distBlur; }
-    bool* getDistBlurSwitch() { return &useDistBlur; }
+	int GetFrameIndex() { return m_frameIndex; }
+	bool* GetAccumulate() { return &m_accumulate; };
+	bool* GetSlowRandom() { return &m_slowRandom; }
+    bool* GetSkyLightSwitch() { return &m_skyLight; }
+    float* GetDistBlur() { return &m_distBlur; }
+    bool* GetDistBlurSwitch() { return &m_useDistBlur; }
 private:
 	int m_frameIndex = 0;
-	glm::vec3 preCalculateRandom = glm::vec3(0.0f);
 
 	std::vector<int> m_widthIter;
 	std::vector<int> m_heightIter;
@@ -65,10 +64,10 @@ private:
 	TTG::Camera* m_activateCamera = nullptr;
 
 	bool m_accumulate = false;
-	bool slowRandom = true;
-	bool skyLight = false;
+	bool m_slowRandom = true;
+	bool m_skyLight = false;
     
-    float distBlur = 17.0f;
-    bool useDistBlur = false;
+    float m_distBlur = 17.0f;
+    bool m_useDistBlur = false;
 };
 

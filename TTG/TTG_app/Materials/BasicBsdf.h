@@ -8,5 +8,5 @@
 class BasicBsdf : public Bsdf
 {
 public:
-	virtual void processHit(BsdfPayload payload, Ray* ray) override;
+	virtual void ProcessHit(BsdfPayload& payload, Ray* ray) override;
 };

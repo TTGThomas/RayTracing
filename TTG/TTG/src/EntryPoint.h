@@ -5,8 +5,8 @@
 int main()
 {
 	TTG::Application* app = createApplication();
-	app->init();
-	app->run();
-	app->cleanup();
+	app->Init();
+	app->Run();
+	app->Cleanup();
 	delete app;
 }

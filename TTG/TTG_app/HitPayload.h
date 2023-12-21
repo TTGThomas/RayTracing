@@ -9,11 +9,11 @@ enum HitType
 
 struct HitPayload
 {
-	bool hasHit;
-	glm::vec3 hitPos;
-	glm::vec3 hitNormal;
+	bool m_hasHit;
+	glm::vec3 m_hitPos;
+	glm::vec3 m_hitNormal;
 
-	int hitIndex;
-	float hitDistance;
-	HitType hitType;
+	int m_hitIndex;
+	float m_hitDistance;
+	HitType m_hitType;
 };

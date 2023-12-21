@@ -9,7 +9,7 @@ namespace TTG
 {
 	namespace Utils
 	{
-		std::string read(const char* filePath)
+		inline std::string Read(const char* filePath)
 		{
 			std::ifstream file;
 			file.open(filePath);

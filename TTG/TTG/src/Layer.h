@@ -3,9 +3,9 @@
 class Layer
 {
 public:
-	virtual void onAttach(GLFWwindow* handle) {};
-	virtual void onDetach() {};
+	virtual void OnAttach(GLFWwindow* handle) {};
+	virtual void OnDetach() {};
 
-	virtual void onUIRender(int ID) {};
-	virtual void onTick() {};
+	virtual void OnUIRender(int ID) {};
+	virtual void OnTick() {};
 };

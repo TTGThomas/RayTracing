@@ -8,27 +8,27 @@ namespace Shapes
 	class Triangle
 	{
 	public:
-		void init(::Triangle triangle);
+		void Init(::Triangle triangle);
 
-		void addToScene(Scene* scene);
+		void AddToScene(Scene* scene);
 
-		void setPointA(glm::vec3 p);
-		void setPointA(float x, float y, float z);
+		void SetPointA(glm::vec3 p);
+		void SetPointA(float x, float y, float z);
 
-		void setPointB(glm::vec3 p);
-		void setPointB(float x, float y, float z);
+		void SetPointB(glm::vec3 p);
+		void SetPointB(float x, float y, float z);
 
-		void setPointC(glm::vec3 p);
-		void setPointC(float x, float y, float z);
+		void SetPointC(glm::vec3 p);
+		void SetPointC(float x, float y, float z);
 
-		void setMaterialIndex(int index);
-		void setBsdfIndex(int index);
+		void SetMaterialIndex(int index);
+		void SetBsdfIndex(int index);
 
-		void computeNormal();
-		void flipNormal();
-		void flipSequence();
+		void ComputeNormal();
+		void FlipNormal();
+		void FlipSequence();
 
-		::Triangle getData()
+		::Triangle GetData()
 		{
 			return m_tri;
 		}

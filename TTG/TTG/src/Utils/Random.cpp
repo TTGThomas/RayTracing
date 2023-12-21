@@ -1,4 +1,4 @@
 #include "Random.h"
 
-std::random_device TTG::Random::rd;
-std::mt19937 TTG::Random::gen(rd());
+std::random_device TTG::Random::m_rd;
+std::mt19937 TTG::Random::m_gen(m_rd());
