@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Scene.h"
+#include "../Hittables/Scene.h"
 #include "Utils/Math.h"
 
 namespace Shapes

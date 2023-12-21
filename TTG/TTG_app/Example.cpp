@@ -27,351 +27,348 @@
 class ExampleLayer : public Layer
 {
 public:
-	ExampleLayer()
-		: renderer(&scene, &camera)
-	{
-		camera.position = glm::vec3(0.03f, 0.0f, 1.8f);
-		camera.speed = 1.0f;
-
-		{
-			// BSDF 0
-#define Basic 0
-			scene.bsdf.emplace_back(std::make_unique<BasicBsdf>());
-		}
-
-		{
-			// BSDF 1
-#define Test 1
-			scene.bsdf.emplace_back(std::make_unique<TestBsdf>());
-		}
-
-		{
-			// BSDF 2
-#define Glass 2
-			scene.bsdf.emplace_back(std::make_unique<GlassBsdf>());
-		}
-
-		switch (3)
-		{
-		case 0:
-			cornellBox();
-			break;
-		case 1:
-			test();
-			break;
-		case 2:
-			glass();
-			break;
-        case 3:
-            Balls();
-            break;
-		}
-	}
-
-	virtual void onAttach(GLFWwindow* handle) override
-	{
-		m_handle = handle;
-	}
-
-	virtual void onDetach() override
+    ExampleLayer()
+    : renderer(&scene, &camera)
     {
-	}
-
-	virtual void onUIRender(int id) override
-	{
-		tick.start();
+        camera.position = glm::vec3(0.03f, 0.0f, 1.8f);
+        camera.speed = 1.0f;
+        
+        {
+            // BSDF 0
+#define Basic 0
+            scene.bsdf.emplace_back(std::make_unique<BasicBsdf>());
+        }
+        
+        {
+            // BSDF 1
+#define Test 1
+            scene.bsdf.emplace_back(std::make_unique<TestBsdf>());
+        }
+        
+        {
+            // BSDF 2
+#define Glass 2
+            scene.bsdf.emplace_back(std::make_unique<GlassBsdf>());
+        }
+        
+        switch (0)
+        {
+            case 0:
+                cornellBox();
+                break;
+            case 1:
+                test();
+                break;
+            case 2:
+                glass();
+                break;
+            case 3:
+                Balls();
+                break;
+        }
+    }
+    
+    virtual void onAttach(GLFWwindow* handle) override
+    {
+        m_handle = handle;
+    }
+    
+    virtual void onDetach() override
+    {
+    }
+    
+    virtual void onUIRender(int id) override
+    {
+        tick.start();
         mainViewport(id);
-		editor();
-		tick.stop();
-	}
-
-	virtual void onTick() override
-	{
-		return;
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-		{
-			glm::vec<2, double> pos;
-
-			glfwGetCursorPos(m_handle, &pos.x, &pos.y);
-
-			pos.y -= 30.0f;
-
-			if (ImGui::GetMousePos().x > renderer.getWidth())
-				return;
-
-			Ray ray;
-			ray.Origin = camera.position;
-			ray.Origin.y = -ray.Origin.y;
-			int index = (pos.y) * renderer.getWidth() + pos.x;
-
-			if (index > camera.rayDirections.size() - 1)
-				return;
-
-			ray.Direction = camera.rayDirections[index];
-			ray.Direction.y = -ray.Direction.y;
-			//ray.Origin += ray.Direction;
-			HitPayload payload = renderer.traceRay(ray);
-
-			//Triangle& tri = scene.triangles.emplace_back();
-			//tri.PosA = ray.Origin;
-			//tri.PosB = ray.Origin + ray.Direction * 10.0f;
-			//tri.PosB.y += 0.1f;
-			//tri.PosC = ray.Origin + ray.Direction * 10.0f;
-			//tri.PosC.y -= 0.1f;
-			//tri.bsdfIndex = Basic;
-			//tri.matIndex = scene.mat.size() - 1;
-
-			if (payload.hasHit)
-			{
-				selected = true;
-				sIndex = payload.hitIndex;
-				sType = payload.hitType;
-			}
-			else
-			{
-				selected = false;
-			}
-		}
-	}
-
+        editor();
+        tick.stop();
+    }
+    
+    virtual void onTick() override
+    {
+        return;
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        {
+            glm::vec<2, double> pos;
+            
+            glfwGetCursorPos(m_handle, &pos.x, &pos.y);
+            
+            pos.y -= 30.0f;
+            
+            if (ImGui::GetMousePos().x > renderer.getWidth())
+                return;
+            
+            Ray ray;
+            ray.Origin = camera.position;
+            ray.Origin.y = -ray.Origin.y;
+            int index = (pos.y) * renderer.getWidth() + pos.x;
+            
+            if (index > camera.rayDirections.size() - 1)
+                return;
+            
+            ray.Direction = camera.rayDirections[index];
+            ray.Direction.y = -ray.Direction.y;
+            //ray.Origin += ray.Direction;
+            HitPayload payload = renderer.traceRay(ray);
+            
+            //Triangle& tri = scene.triangles.emplace_back();
+            //tri.PosA = ray.Origin;
+            //tri.PosB = ray.Origin + ray.Direction * 10.0f;
+            //tri.PosB.y += 0.1f;
+            //tri.PosC = ray.Origin + ray.Direction * 10.0f;
+            //tri.PosC.y -= 0.1f;
+            //tri.bsdfIndex = Basic;
+            //tri.matIndex = scene.mat.size() - 1;
+            
+            if (payload.hasHit)
+            {
+                selected = true;
+                sIndex = payload.hitIndex;
+                sType = payload.hitType;
+            }
+            else
+            {
+                selected = false;
+            }
+        }
+    }
+    
 private:
-	void mainViewport(int id)
-	{
-		if (!viewPortOpen)
-			return;
-
-		if (docking)
-		{
-			if (id == 0)
-			{
-				ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-			}
-		}
-
-		ImGui::Begin("main viewport", &viewPortOpen, ImGuiWindowFlags_MenuBar);
-
-		windowSetup();
-
-		config = { ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 60.0f, 0.1f };
-		if (camera.update(config))
-			renderer.resetFrameIndex();
-		render();
-
-		ImGui::End();
-	}
-
-	void editor()
-	{
-		if (!editorOpen)
-			return;
-
-		ImGui::Begin("Editor", &editorOpen);
-
-		if (!selected)
-		{
-			ImGui::SeparatorText("spheres");
-			for (int i = 0; i < scene.spheres.size(); i++)
-			{
-				ImGui::PushID(i);
-
-				Sphere& sphere = scene.spheres[i];
-				ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
-				ImGui::DragFloat("Radius", &sphere.radius, 0.1f);
-				ImGui::DragInt("material index", &sphere.matIndex, 0.1f, 0, scene.mat.size() - 1);
-				ImGui::Checkbox("Visible", &sphere.visible);
-				ImGui::DragInt("bsdf index", &sphere.bsdfIndex, 0.1f, 0, scene.bsdf.size() - 1);
-				if (ImGui::CollapsingHeader("advance"))
-				{
-					scene.bsdf[sphere.bsdfIndex]->advanceSetting();
-				}
-				ImGui::Separator();
-
-				ImGui::PopID();
-			}
-
-			ImGui::SeparatorText("planes");
-			for (int i = 0; i < scene.planes.size(); i++)
-			{
-				ImGui::PushID(i + scene.spheres.size());
-
-				Plane& plane = scene.planes[i];
-				ImGui::DragFloat3("Position", glm::value_ptr(plane.Position), 0.1f);
-				ImGui::DragFloat3("Normal", glm::value_ptr(plane.normal), 0.1f);
-				ImGui::DragInt("material index", &plane.matIndex, 0.1f, 0, scene.mat.size() - 1);
-				ImGui::Checkbox("Visible", &plane.visible);
-				ImGui::Separator();
-
-				ImGui::PopID();
-			}
-
-			ImGui::SeparatorText("triangles");
-			for (int i = 0; i < scene.triangles.size(); i++)
-			{
-				ImGui::PushID(i + scene.spheres.size() + scene.planes.size());
-
-				Triangle& tri = scene.triangles[i];
-				ImGui::DragFloat3("PositionA", glm::value_ptr(tri.PosA), 0.1f);
-				ImGui::DragFloat3("PositionB", glm::value_ptr(tri.PosB), 0.1f);
-				ImGui::DragFloat3("PositionC", glm::value_ptr(tri.PosC), 0.1f);
-
-				ImGui::DragFloat3("NormalA", glm::value_ptr(tri.na), 0.1f);
-				ImGui::DragFloat3("NormalB", glm::value_ptr(tri.nb), 0.1f);
-				ImGui::DragFloat3("NormalC", glm::value_ptr(tri.nc), 0.1f);
-
-				ImGui::DragInt("material index", &tri.matIndex, 0.1f, 0, scene.mat.size() - 1);
-
-				if (ImGui::Button("compute normal"))
-				{
-					Shapes::Triangle t;
-					t.init(tri);
-					t.computeNormal();
-					scene.triangles[i] = t.getData();
-				}
-
-				if (ImGui::Button("flip normal"))
-				{
-					Shapes::Triangle t;
-					t.init(tri);
-					t.flipNormal();
-					scene.triangles[i] = t.getData();
-				}
-
-				if (ImGui::Button("flip Sequence"))
-				{
-					Shapes::Triangle t;
-					t.init(tri);
-					t.flipSequence();
-					scene.triangles[i] = t.getData();
-				}
-
-				ImGui::Checkbox("Visible", &tri.visible);
-
-				ImGui::Separator();
-
-				ImGui::PopID();
-			}
-
-			ImGui::SeparatorText("materials");
-			for (int i = 0; i < scene.mat.size(); i++)
-			{
-				ImGui::PushID(i);
-
-				Material& mat = scene.mat[i];
-				ImGui::Text("material %i", i);
-				ImGui::ColorEdit3("color", glm::value_ptr(mat.albedo));
-				ImGui::DragFloat("roughness", &mat.roughness, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("metalic", &mat.metalic, 0.01f, 0.0f, 1.0f);
-				ImGui::ColorEdit3("emission color", glm::value_ptr(mat.emissionColor));
-				ImGui::DragFloat("emission power", &mat.emissionPower, 0.01f, 0.0f, FLT_MAX);
-				ImGui::Separator();
-
-				ImGui::PopID();
-			}
-		}
-		else
-		{
-			ShapeBase* entity = nullptr;
-
-			if (sType == HitType::SPHERE)
-			{
-				ImGui::SeparatorText("Sphere");
-
-				Sphere& sphere = scene.spheres[sIndex];
-				entity = &sphere;
-
-				ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
-				ImGui::DragFloat("Radius", &sphere.radius, 0.1f);
-				ImGui::DragInt("material index", &sphere.matIndex, 0.f, 0, scene.mat.size() - 1);
-				ImGui::Checkbox("Visible", &sphere.visible);
-			}
-			else if (sType == HitType::PLANE)
-			{
-				ImGui::SeparatorText("Plane");
-
-				Plane& plane = scene.planes[sIndex];
-				entity = &plane;
-
-				ImGui::DragFloat3("Position", glm::value_ptr(plane.Position), 0.1f);
-				ImGui::DragFloat3("Normal", glm::value_ptr(plane.normal), 0.1f);
-				ImGui::DragInt("material index", &plane.matIndex, 0.f, 0, scene.mat.size() - 1);
-				ImGui::Checkbox("Visible", &plane.visible);
-			}
-			else if (sType == HitType::TRIANGLE)
-			{
-				ImGui::SeparatorText("Triangle");
-
-				Triangle& tri = scene.triangles[sIndex];
-				entity = &tri;
-
-				ImGui::DragFloat3("PositionA", glm::value_ptr(tri.PosA), 0.1f);
-				ImGui::DragFloat3("PositionB", glm::value_ptr(tri.PosB), 0.1f);
-				ImGui::DragFloat3("PositionC", glm::value_ptr(tri.PosC), 0.1f);
-
-				ImGui::DragFloat3("NormalA", glm::value_ptr(tri.na), 0.1f);
-				ImGui::DragFloat3("NormalB", glm::value_ptr(tri.nb), 0.1f);
-				ImGui::DragFloat3("NormalC", glm::value_ptr(tri.nc), 0.1f);
-
-				ImGui::DragInt("material index", &tri.matIndex, 0.f, 0, scene.mat.size() - 1);
-
-				if (ImGui::Button("compute normal"))
-				{
-					Shapes::Triangle t;
-					t.init(tri);
-					t.computeNormal();
-					tri = t.getData();
-				}
-
-				if (ImGui::Button("flip normal"))
-				{
-					Shapes::Triangle t;
-					t.init(tri);
-					t.flipNormal();
-					tri = t.getData();
-				}
-
-				if (ImGui::Button("flip Sequence"))
-				{
-					Shapes::Triangle t;
-					t.init(tri);
-					t.flipSequence();
-					tri = t.getData();
-				}
-
-				ImGui::Checkbox("Visible", &tri.visible);
-			}
-
-			ImGui::SeparatorText("Binded Material");
-
-			if (entity != nullptr)
-			{
-				Material& mat = scene.mat[entity->matIndex];
-				ImGui::ColorEdit3("color", glm::value_ptr(mat.albedo));
-				ImGui::DragFloat("roughness", &mat.roughness, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("metalic", &mat.metalic, 0.01f, 0.0f, 1.0f);
-				ImGui::ColorEdit3("emission color", glm::value_ptr(mat.emissionColor));
-				ImGui::DragFloat("emission power", &mat.emissionPower, 0.01f, 0.0f, FLT_MAX);
-				ImGui::Separator();
-			}
-		}
-		
-		ImGui::SeparatorText("editors");
-		ImGui::Text("this is the Editor");
-		ImGui::Text("last render: %fms", t.ms());
-		ImGui::Text("last tick: %fms", tick.ms());
-		if (ImGui::Button("reset"))
-			renderer.resetFrameIndex();
-		ImGui::Checkbox("accumulate", renderer.getAccumulate());
-		if (!(*renderer.getAccumulate()))
-			renderer.resetFrameIndex();
-
-		ImGui::Checkbox("slow random", renderer.getSlowRandom());
-		ImGui::Checkbox("sky light emission", renderer.getSkyLightSwitch());
+    void mainViewport(int id)
+    {
+        if (!viewPortOpen)
+            return;
+        
+        if (docking)
+        {
+            if (id == 0)
+            {
+                ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+            }
+        }
+        
+        ImGui::Begin("main viewport", &viewPortOpen, ImGuiWindowFlags_MenuBar);
+        
+        windowSetup();
+        
+        config = { ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 60.0f, 0.1f };
+        if (camera.update(config))
+            renderer.resetFrameIndex();
+        render();
+        
+        ImGui::End();
+    }
+    
+    void editor()
+    {
+        if (!editorOpen)
+            return;
+        
+        ImGui::Begin("Editor", &editorOpen);
+        
+        ImGui::SeparatorText("spheres");
+        for (int i = 0; i < scene.spheres.size(); i++)
+        {
+            ImGui::PushID(i);
+            
+            Sphere& sphere = scene.spheres[i];
+            ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
+            ImGui::DragFloat("Radius", &sphere.radius, 0.1f);
+            ImGui::DragInt("material index", &sphere.matIndex, 0.1f, 0, scene.mat.size() - 1);
+            ImGui::Checkbox("Visible", &sphere.visible);
+            ImGui::DragInt("bsdf index", &sphere.bsdfIndex, 0.1f, 0, scene.bsdf.size() - 1);
+            if (ImGui::CollapsingHeader("advance"))
+            {
+                scene.bsdf[sphere.bsdfIndex]->advanceSetting();
+            }
+            ImGui::Separator();
+            
+            ImGui::PopID();
+        }
+        
+        ImGui::SeparatorText("planes");
+        for (int i = 0; i < scene.planes.size(); i++)
+        {
+            ImGui::PushID(i + scene.spheres.size());
+            
+            Plane& plane = scene.planes[i];
+            ImGui::DragFloat3("Position", glm::value_ptr(plane.Position), 0.1f);
+            ImGui::DragFloat3("Normal", glm::value_ptr(plane.normal), 0.1f);
+            ImGui::DragInt("material index", &plane.matIndex, 0.1f, 0, scene.mat.size() - 1);
+            ImGui::Checkbox("Visible", &plane.visible);
+            ImGui::Separator();
+            
+            ImGui::PopID();
+        }
+        
+        ImGui::SeparatorText("triangles");
+        for (int i = 0; i < scene.triangles.size(); i++)
+        {
+            ImGui::PushID(i + scene.spheres.size() + scene.planes.size());
+            
+            Triangle& tri = scene.triangles[i];
+            ImGui::DragFloat3("PositionA", glm::value_ptr(tri.PosA), 0.1f);
+            ImGui::DragFloat3("PositionB", glm::value_ptr(tri.PosB), 0.1f);
+            ImGui::DragFloat3("PositionC", glm::value_ptr(tri.PosC), 0.1f);
+            
+            ImGui::DragFloat3("NormalA", glm::value_ptr(tri.na), 0.1f);
+            ImGui::DragFloat3("NormalB", glm::value_ptr(tri.nb), 0.1f);
+            ImGui::DragFloat3("NormalC", glm::value_ptr(tri.nc), 0.1f);
+            
+            ImGui::DragInt("material index", &tri.matIndex, 0.1f, 0, scene.mat.size() - 1);
+            
+            if (ImGui::Button("compute normal"))
+            {
+                Shapes::Triangle t;
+                t.init(tri);
+                t.computeNormal();
+                scene.triangles[i] = t.getData();
+            }
+            
+            if (ImGui::Button("flip normal"))
+            {
+                Shapes::Triangle t;
+                t.init(tri);
+                t.flipNormal();
+                scene.triangles[i] = t.getData();
+            }
+            
+            if (ImGui::Button("flip Sequence"))
+            {
+                Shapes::Triangle t;
+                t.init(tri);
+                t.flipSequence();
+                scene.triangles[i] = t.getData();
+            }
+            
+            ImGui::Checkbox("Visible", &tri.visible);
+            
+            ImGui::Separator();
+            
+            ImGui::PopID();
+            
+            ImGui::SeparatorText("materials");
+            for (int i = 0; i < scene.mat.size(); i++)
+            {
+                ImGui::PushID(i);
+                
+                Material& mat = scene.mat[i];
+                ImGui::Text("material %i", i);
+                ImGui::ColorEdit3("color", glm::value_ptr(mat.albedo));
+                ImGui::DragFloat("roughness", &mat.roughness, 0.01f, 0.0f, 1.0f);
+                ImGui::DragFloat("metalic", &mat.metalic, 0.01f, 0.0f, 1.0f);
+                ImGui::ColorEdit3("emission color", glm::value_ptr(mat.emissionColor));
+                ImGui::DragFloat("emission power", &mat.emissionPower, 0.01f, 0.0f, FLT_MAX);
+                ImGui::Separator();
+                
+                ImGui::PopID();
+            }
+        }
+        else
+        {
+            Hittable* entity = nullptr;
+            
+            if (sType == HitType::SPHERE)
+            {
+                ImGui::SeparatorText("Sphere");
+                
+                Sphere& sphere = scene.spheres[sIndex];
+                entity = &sphere;
+                
+                ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
+                ImGui::DragFloat("Radius", &sphere.radius, 0.1f);
+                ImGui::DragInt("material index", &sphere.matIndex, 0.f, 0, scene.mat.size() - 1);
+                ImGui::Checkbox("Visible", &sphere.visible);
+            }
+            else if (sType == HitType::PLANE)
+            {
+                ImGui::SeparatorText("Plane");
+                
+                Plane& plane = scene.planes[sIndex];
+                entity = &plane;
+                
+                ImGui::DragFloat3("Position", glm::value_ptr(plane.Position), 0.1f);
+                ImGui::DragFloat3("Normal", glm::value_ptr(plane.normal), 0.1f);
+                ImGui::DragInt("material index", &plane.matIndex, 0.f, 0, scene.mat.size() - 1);
+                ImGui::Checkbox("Visible", &plane.visible);
+            }
+            else if (sType == HitType::TRIANGLE)
+            {
+                ImGui::SeparatorText("Triangle");
+                
+                Triangle& tri = scene.triangles[sIndex];
+                entity = &tri;
+                
+                ImGui::DragFloat3("PositionA", glm::value_ptr(tri.PosA), 0.1f);
+                ImGui::DragFloat3("PositionB", glm::value_ptr(tri.PosB), 0.1f);
+                ImGui::DragFloat3("PositionC", glm::value_ptr(tri.PosC), 0.1f);
+                
+                ImGui::DragFloat3("NormalA", glm::value_ptr(tri.na), 0.1f);
+                ImGui::DragFloat3("NormalB", glm::value_ptr(tri.nb), 0.1f);
+                ImGui::DragFloat3("NormalC", glm::value_ptr(tri.nc), 0.1f);
+                
+                ImGui::DragInt("material index", &tri.matIndex, 0.f, 0, scene.mat.size() - 1);
+                
+                if (ImGui::Button("compute normal"))
+                {
+                    Shapes::Triangle t;
+                    t.init(tri);
+                    t.computeNormal();
+                    tri = t.getData();
+                }
+                
+                if (ImGui::Button("flip normal"))
+                {
+                    Shapes::Triangle t;
+                    t.init(tri);
+                    t.flipNormal();
+                    tri = t.getData();
+                }
+                
+                if (ImGui::Button("flip Sequence"))
+                {
+                    Shapes::Triangle t;
+                    t.init(tri);
+                    t.flipSequence();
+                    tri = t.getData();
+                }
+                
+                ImGui::Checkbox("Visible", &tri.visible);
+            }
+            
+            ImGui::SeparatorText("Binded Material");
+            
+            if (entity != nullptr)
+            {
+                Material& mat = scene.mat[entity->matIndex];
+                ImGui::ColorEdit3("color", glm::value_ptr(mat.albedo));
+                ImGui::DragFloat("roughness", &mat.roughness, 0.01f, 0.0f, 1.0f);
+                ImGui::DragFloat("metalic", &mat.metalic, 0.01f, 0.0f, 1.0f);
+                ImGui::ColorEdit3("emission color", glm::value_ptr(mat.emissionColor));
+                ImGui::DragFloat("emission power", &mat.emissionPower, 0.01f, 0.0f, FLT_MAX);
+                ImGui::Separator();
+            }
+        }
+        
+        ImGui::SeparatorText("editors");
+        ImGui::Text("this is the Editor");
+        ImGui::Text("last render: %fms", t.ms());
+        ImGui::Text("last tick: %fms", tick.ms());
+        if (ImGui::Button("reset"))
+            renderer.resetFrameIndex();
+        ImGui::Checkbox("accumulate", renderer.getAccumulate());
+        if (!(*renderer.getAccumulate()))
+            renderer.resetFrameIndex();
+        
+        ImGui::Checkbox("slow random", renderer.getSlowRandom());
+        ImGui::Checkbox("sky light emission", renderer.getSkyLightSwitch());
         ImGui::Checkbox("User Dist Blur", renderer.getDistBlurSwitch());
         if (*renderer.getDistBlurSwitch())
             ImGui::DragFloat("Dist Blur", renderer.getDistBlur(), 0.01f, 0.0f, FLT_MAX);
-
-		ImGui::End();
-	}
+        
+        ImGui::End();
+    }
 
 	void render()
 	{

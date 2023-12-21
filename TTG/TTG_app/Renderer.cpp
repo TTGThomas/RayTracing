@@ -14,7 +14,6 @@ glm::vec<4, unsigned char> Renderer::convertToChar(glm::vec4 color)
 	return { r, g, b, a};
 }
 
-
 bool Renderer::onResize()
 {
 	if (m_imageData == nullptr || m_width != ImGui::GetWindowWidth() || m_height != ImGui::GetWindowHeight() - 60.0f || m_frameIndex == 0)

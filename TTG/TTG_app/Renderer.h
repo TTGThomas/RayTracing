@@ -9,7 +9,7 @@
 #include <glm/gtx/fast_square_root.hpp>
 
 #include "Ray.h"
-#include "Scene.h"
+#include "Hittables/Scene.h"
 #include "HitPayload.h"
 
 #include <algorithm>

@@ -642,6 +642,10 @@
 		3B08DD492B315E6F00812F2B /* libassimp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libassimp.dylib; sourceTree = "<group>"; };
 		3B08DD4A2B315E6F00812F2B /* libzlibstatic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzlibstatic.a; sourceTree = "<group>"; };
 		3B08DD4B2B315E6F00812F2B /* libassimp.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libassimp.5.dylib; sourceTree = "<group>"; };
+		3B5F52022B3426DE00C27295 /* HittableBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HittableBase.h; sourceTree = "<group>"; };
+		3B5F52032B34283700C27295 /* HitTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HitTriangle.h; sourceTree = "<group>"; };
+		3B5F52042B34290400C27295 /* HitSphere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HitSphere.h; sourceTree = "<group>"; };
+		3B5F52052B3429C400C27295 /* HitPlane.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HitPlane.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -854,6 +858,7 @@
 		3B08D6FC2B2ED4DA00812F2B /* TTG_app */ = {
 			isa = PBXGroup;
 			children = (
+				3B5F52012B3426BC00C27295 /* Hittables */,
 				3B08D6FD2B2ED4DA00812F2B /* HitPayload.h */,
 				3B08D6FE2B2ED4DA00812F2B /* Materials */,
 				3B08D7062B2ED4DA00812F2B /* Example.cpp */,
@@ -862,7 +867,6 @@
 				3B08D7092B2ED4DA00812F2B /* shapes */,
 				3B08D70C2B2ED4DA00812F2B /* Ray.h */,
 				3B08D70D2B2ED4DA00812F2B /* Renderer.cpp */,
-				3B08D70E2B2ED4DA00812F2B /* Scene.h */,
 			);
 			path = TTG_app;
 			sourceTree = "<group>";
@@ -1554,6 +1558,18 @@
 				3B08DD3C2B315A9D00812F2B /* pushpack1.h */,
 			);
 			path = Compiler;
+			sourceTree = "<group>";
+		};
+		3B5F52012B3426BC00C27295 /* Hittables */ = {
+			isa = PBXGroup;
+			children = (
+				3B08D70E2B2ED4DA00812F2B /* Scene.h */,
+				3B5F52022B3426DE00C27295 /* HittableBase.h */,
+				3B5F52032B34283700C27295 /* HitTriangle.h */,
+				3B5F52042B34290400C27295 /* HitSphere.h */,
+				3B5F52052B3429C400C27295 /* HitPlane.h */,
+			);
+			path = Hittables;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
