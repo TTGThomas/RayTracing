@@ -7,7 +7,7 @@ void Shapes::Triangle::Init(::Triangle triangle)
 
 void Shapes::Triangle::AddToScene(Scene* scene)
 {
-	scene->objects.emplace_back(m_tri);
+	scene->objects.emplace_back(std::make_unique<Triangle>(m_tri));
 }
 
 void Shapes::Triangle::SetPointA(glm::vec3 p)

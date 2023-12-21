@@ -26,16 +26,13 @@ public:
 
 	void ResetFrameIndex() { m_frameIndex = 0; }
 
-	HitPayload TraceRay(Ray ray);
-	HitPayload TraceSpheres(Ray ray);
-	HitPayload TracePlanes(Ray ray);
-	HitPayload TraceTriangles(Ray ray);
-	HitPayload ClosestHit(Ray ray, float t, int index, HitType hitType);
+	HitPayload TraceRay(const Ray& ray);
+	HitPayload ClosestHit(const Ray& ray, float t, int index);
 	HitPayload Miss();
 
 	glm::vec4 PerPixel(int x, int y);
 
-	glm::vec<4, unsigned char> ConvertToChar(glm::vec4 color);
+	glm::vec<4, unsigned char> ConvertToChar(const glm::vec4& color);
 
 	TTG::Texture& GetFinalImage() { return m_finalImage; }
 	unsigned char* GetImageData() { return m_imageData; }

@@ -16,6 +16,15 @@ struct Plane : public Hittable
     
     virtual float Hit(const Ray& ray) override
     {
-        return -1.0f;
+        if (!m_visible)
+            return -1.0f;
+
+        float denomanator = TTG::Math::Dot(m_normal, ray.m_direction);
+        if (denomanator == 0)
+            return -1.0f;
+
+        float numerator = TTG::Math::Dot(m_normal, m_position * glm::vec3(1.0f, -1.0f, 1.0f)) - TTG::Math::Dot(m_normal, ray.m_origin);
+
+        return numerator / denomanator;
     }
 };
