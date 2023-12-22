@@ -131,7 +131,7 @@ HitPayload Renderer::TraceRay(const Ray& ray)
 			minDist = dist;
 		}
 	}
-	if (minDist < 0.0f)
+	if (index == -1)
 		return Miss();
 	return ClosestHit(ray, minDist, index);
 }
@@ -150,7 +150,8 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 	{
 	case HitType::SPHERE:
 	{
-		::Sphere* sphere = reinterpret_cast<::Sphere*>(m_activateScene->objects[index].get());
+		//::Sphere* sphere = reinterpret_cast<::Sphere*>(m_activateScene->objects[index].get());
+		::Sphere* sphere = dynamic_cast<::Sphere*>(m_activateScene->objects[index].get());
 
 		glm::vec3 sphereOrigin = sphere->m_position;
 		sphereOrigin.y = 0.0f - sphereOrigin.y;
@@ -166,7 +167,8 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 		break;
 	case HitType::PLANE:
 	{
-		::Plane* plane = reinterpret_cast<::Plane*>(m_activateScene->objects[index].get());
+		//::Plane* plane = reinterpret_cast<::Plane*>(m_activateScene->objects[index].get());
+		::Plane* plane = dynamic_cast<::Plane*>(m_activateScene->objects[index].get());
 
 		payload.m_hitNormal = -plane->m_normal;
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
@@ -174,11 +176,12 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 		break;
 	case HitType::TRIANGLE:
 	{
-		::Triangle* tri = reinterpret_cast<::Triangle*>(m_activateScene->objects[index].get());
+		//::Triangle* tri = reinterpret_cast<::Triangle*>(m_activateScene->objects[index].get());
+		::Triangle* tri = dynamic_cast<::Triangle*>(m_activateScene->objects[index].get());
 
 		HitPayload payload;
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
-		payload.m_hitNormal = TTG::Math::Normalize(tri->m_na * tri->GetW() + tri->m_nb * tri->GetU() + tri->m_nc * tri->GetV());
+		//payload.m_hitNormal = TTG::Math::Normalize(tri->m_na * tri->GetW() + tri->m_nb * tri->GetU() + tri->m_nc * tri->GetV());
 	}
 		break;
 	}
@@ -196,8 +199,6 @@ HitPayload Renderer::Miss()
 
 glm::vec4 Renderer::PerPixel(int x, int y)
 {
-	//return glm::vec4((float)x / (float)m_width, (float)y / (float)m_height, 0.0f, 1.0f);
-
 	Ray ray;
 	ray.m_origin = m_activateCamera->m_position;
 	ray.m_direction = m_activateCamera->m_rayDirections[y * m_width + x];
@@ -227,9 +228,11 @@ glm::vec4 Renderer::PerPixel(int x, int y)
 				light += skyColor * contribution;
 			break;
 		}
-		Material& mat = m_activateScene->mat[hit.m_hitIndex];
-		
-#define ALBEDOSHADER 0
+		Hittable* object = m_activateScene->objects[hit.m_hitIndex].get();
+		Material& mat = m_activateScene->mat[object->m_matIndex];
+
+		return glm::vec4(hit.m_hitNormal, 1.0f);
+#define ALBEDOSHADER 1
 #if ALBEDOSHADER
 		return mat.m_albedo;
 #endif
@@ -247,7 +250,7 @@ glm::vec4 Renderer::PerPixel(int x, int y)
 		BsdfPayload t;
 		t.m_mat = mat;
 		t.m_payload = hit;
-		int bsdfIndex = m_activateScene->objects[hit.m_hitIndex]->m_bsdfIndex;
+		int bsdfIndex = object->m_bsdfIndex;
 
 		m_activateScene->bsdf[bsdfIndex]->ProcessHit(t, &ray);
 	}

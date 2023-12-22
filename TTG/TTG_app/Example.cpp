@@ -16,8 +16,11 @@
 #include "Materials/GlassBsdf.h"
 
 #include "Renderer.h"
-#include "Hittables/Scene.h"
+#include "Scene.h"
+
 #include "shapes/Triangle.h"
+#include "shapes/Sphere.h"
+#include "shapes/Plane.h"
 
 #include <stdio.h>
 #include <string>
@@ -123,7 +126,7 @@ private:
 		for (int i = 0; i < m_scene.objects.size(); i++)
 		{
 			ImGui::PushID(i);
-			HitType& type = m_scene.objects[i].m_type;
+			HitType& type = m_scene.objects[i]->m_type;
 			if (type == HitType::TRIANGLE)
 			{
 				ImGui::SeparatorText("Triangle");
@@ -136,7 +139,7 @@ private:
 			{
 				ImGui::SeparatorText("Plane");
 			}
-			ImGui::PopID;
+			ImGui::PopID();
 		}
         
         ImGui::SeparatorText("editors");
@@ -278,9 +281,9 @@ private:
 
 		// light
 		{
-			tri.SetPointA(-0.5f, 0.9f, -0.75f);
-			tri.SetPointB(-0.5f, 0.9f, -0.25f);
-			tri.SetPointC(0.5f, 0.9f, -0.25f);
+			tri.SetPointA(glm::vec3(-0.5f, 0.9f, -0.75f));
+			tri.SetPointB(glm::vec3(-0.5f, 0.9f, -0.25f));
+			tri.SetPointC(glm::vec3(0.5f, 0.9f, -0.25f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -289,9 +292,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-0.5f, 0.9f, -0.75f);
-			tri.SetPointB(0.5f, 0.9f, -0.75f);
-			tri.SetPointC(0.5f, 0.9f, -0.25f);
+			tri.SetPointA(glm::vec3(-0.5f, 0.9f, -0.75f));
+			tri.SetPointB(glm::vec3(0.5f, 0.9f, -0.75f));
+			tri.SetPointC(glm::vec3(0.5f, 0.9f, -0.25f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -302,9 +305,9 @@ private:
 
 		// bottom square
 		{
-			tri.SetPointA(-1.0f, -1.0f, -2.0f);
-			tri.SetPointB(-1.0f, -1.0f, 0.0f);
-			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(-1.0f, -1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -313,9 +316,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, -1.0f, -2.0f);
-			tri.SetPointB(1.0f, -1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(1.0f, -1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -325,9 +328,9 @@ private:
 
 		// top square
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(-1.0f, 1.0f, 0.0f);
-			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(-1.0f, 1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -336,9 +339,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(1.0f, 1.0f, -2.0f);
-			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -348,9 +351,9 @@ private:
 
 		// left square
 		{
-			tri.SetPointA(-1.0f, 1.0f, 0.0f);
-			tri.SetPointB(-1.0f, -1.0f, 0.0f);
-			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(-1.0f, -1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -359,9 +362,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, 1.0f, 0.0f);
-			tri.SetPointB(-1.0f, 1.0f, -2.0f);
-			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -372,9 +375,9 @@ private:
 
 		// right square
 		{
-			tri.SetPointA(1.0f, 1.0f, 0.0f);
-			tri.SetPointB(1.0f, -1.0f, 0.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));;
+			tri.SetPointB(glm::vec3(1.0f, -1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -383,9 +386,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(1.0f, 1.0f, 0.0f);
-			tri.SetPointB(1.0f, 1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -396,9 +399,9 @@ private:
 
 		// forward square
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(-1.0f, -1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(-1.0f, -1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -407,9 +410,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(1.0f, 1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -431,17 +434,18 @@ private:
             mat5.m_roughness = 0.0f;
         }
 
-		Sphere& sphere0 = m_scene.objects.emplace_back();
-		sphere0.m_bsdfIndex = Basic;
-		sphere0.m_matIndex = 4;
-		sphere0.m_position = glm::vec3(0.4f, -0.6f, -0.8f);
-		sphere0.m_radius = 0.4f;
+		Shapes::Sphere sphere;
+		sphere.SetBsdfIndex(Basic);
 
-		Sphere& sphere1 = m_scene.objects.emplace_back();
-		sphere1.m_bsdfIndex = Basic;
-		sphere1.m_matIndex = 5;
-		sphere1.m_position = glm::vec3(-0.4f, -0.6f, -1.0f);
-		sphere1.m_radius = 0.4f;
+		sphere.SetPosition(glm::vec3(0.4f, -0.6f, -0.8f));
+		sphere.SetRadius(0.4f);
+		sphere.SetMaterialIndex(4);
+		sphere.AddToScene(&m_scene);
+
+		sphere.SetPosition(glm::vec3(-0.4f, -0.6f, -1.0f));
+		sphere.SetRadius(0.4f);
+		sphere.SetMaterialIndex(5);
+		sphere.AddToScene(&m_scene);
 	}
 
 	void glass()
@@ -451,37 +455,42 @@ private:
 			mat0.m_albedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 		}
 		Shapes::Triangle tri;
-		tri.SetPointA(0.0f, 6.0f, -2.0f);
-		tri.SetPointB(-3.0f, 0.0f, -2.0f);
-		tri.SetPointC(3.0f, 0.0f, -2.0f);
+		tri.SetPointA(glm::vec3(0.0f, 6.0f, -2.0f));
+		tri.SetPointB(glm::vec3(-3.0f, 0.0f, -2.0f));
+		tri.SetPointC(glm::vec3(3.0f, 0.0f, -2.0f));
 		tri.FlipSequence();
 		tri.ComputeNormal();
 		tri.SetMaterialIndex(0);
 		tri.SetBsdfIndex(Glass);
 		tri.AddToScene(&m_scene);
 
-		tri.SetPointA(0.0f, 6.0f, -2.01f);
-		tri.SetPointB(-3.0f, 0.0f, -2.01f);
-		tri.SetPointC(3.0f, 0.0f, -2.01f);
+		tri.SetPointA(glm::vec3(0.0f, 6.0f, -2.01f));
+		tri.SetPointB(glm::vec3(-3.0f, 0.0f, -2.01f));
+		tri.SetPointC(glm::vec3(3.0f, 0.0f, -2.01f));
+		tri.SetMaterialIndex(0);
+		tri.SetBsdfIndex(Glass);
 		tri.FlipSequence();
 		tri.ComputeNormal();
 		tri.AddToScene(&m_scene);
-
-		Sphere& sphere = m_scene.objects.emplace_back();
-		sphere.m_bsdfIndex = Glass;
-		sphere.m_matIndex = 0;
-		sphere.m_position = glm::vec3(2.0f, 2.0f, -3.5f);
 
 		{
 			Material& mat1 = m_scene.mat.emplace_back();
 			mat1.m_albedo = glm::vec4(1.0f, 0.0f, 1.0f, 1.0);
 		}
 
-		Sphere& sphere0 = m_scene.objects.emplace_back();
-		sphere0.m_position = glm::vec3(0.0f, 2.0f, -3.5f);
-		sphere0.m_radius = 1.0f;
-		sphere0.m_bsdfIndex = Basic;
-		sphere0.m_matIndex = 1;
+		Shapes::Sphere sphere;
+
+		sphere.SetBsdfIndex(Glass);
+		sphere.SetPosition(glm::vec3(2.0f, 2.0f, -3.5f));
+		sphere.SetRadius(1.0f);
+		sphere.SetMaterialIndex(0);
+		sphere.AddToScene(&m_scene);
+
+		sphere.SetBsdfIndex(Basic);
+		sphere.SetPosition(glm::vec3(0.0f, 2.0f, -3.5f));
+		sphere.SetRadius(1.0f);
+		sphere.SetMaterialIndex(1);
+		sphere.AddToScene(&m_scene);
 
 		*m_renderer.GetSkyLightSwitch() = true;
 	}
@@ -500,24 +509,27 @@ private:
             Material& mat1 = m_scene.mat.emplace_back();
             mat1.m_albedo = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
         }
-        
+
+		Shapes::Sphere sphere;
+		sphere.SetMaterialIndex(0);
+		sphere.SetBsdfIndex(Basic);
+		sphere.SetRadius(1.0f);
+
         for (float x = -5.0f; x <= 5.0f; x += 2.0f)
         {
             for (float z = -15.0f; z <= -5.0f; z += 2.0f)
-            {
-                Sphere& sphere0 = m_scene.objects.emplace_back();
-                sphere0.m_position = glm::vec3(x, -3.0f, z);
-                sphere0.m_radius = 1.0f;
-                sphere0.m_bsdfIndex = Basic;
-                sphere0.m_matIndex = 0;
+			{
+				sphere.SetPosition(glm::vec3(x, -3.0f, z));
             }
         }
-        
-        Plane& plane0 = m_scene.objects.emplace_back();
-        plane0.m_position = glm::vec3(0.0f, -4.0f, 0.0f);
-        plane0.m_normal = glm::vec3(0.0f, 1.0f, 0.0f);
-        plane0.m_bsdfIndex = Basic;
-        plane0.m_matIndex = 1;
+
+		Shapes::Plane plane;
+
+		plane.SetPosition(glm::vec3(0.0f, -4.0f, 0.0f));
+		plane.SetNormal(glm::vec3(0.0f, 1.0f, 0.0f));
+		plane.SetBsdfIndex(Basic);
+		plane.SetMaterialIndex(1);
+		plane.AddToScene(&m_scene);
     }
 
 	void addSquare(glm::vec3 pos, glm::vec3 scale, int mat, bool flipFace)
@@ -547,9 +559,9 @@ private:
 		Shapes::Triangle tri;
 		// bottom square
 		{
-			tri.SetPointA(-1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointB(pos);
-			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -558,9 +570,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, -1.0f, -2.0f);
-			tri.SetPointB(1.0f, -1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(1.0f, -1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -570,9 +582,9 @@ private:
 
 		// top square
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(-1.0f, 1.0f, 0.0f);
-			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(-1.0f, 1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -581,9 +593,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(1.0f, 1.0f, -2.0f);
-			tri.SetPointC(1.0f, 1.0f, 0.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -593,9 +605,9 @@ private:
 
 		// left square
 		{
-			tri.SetPointA(-1.0f, 1.0f, 0.0f);
-			tri.SetPointB(-1.0f, -1.0f, 0.0f);
-			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(-1.0f, -1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -604,9 +616,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, 1.0f, 0.0f);
-			tri.SetPointB(-1.0f, 1.0f, -2.0f);
-			tri.SetPointC(-1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -617,9 +629,9 @@ private:
 
 		// right square
 		{
-			tri.SetPointA(1.0f, 1.0f, 0.0f);
-			tri.SetPointB(1.0f, -1.0f, 0.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(1.0f, -1.0f, 0.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -628,9 +640,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(1.0f, 1.0f, 0.0f);
-			tri.SetPointB(1.0f, 1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));
+			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -641,9 +653,9 @@ private:
 
 		// forward square
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(-1.0f, -1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(-1.0f, -1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -652,9 +664,9 @@ private:
 		}
 
 		{
-			tri.SetPointA(-1.0f, 1.0f, -2.0f);
-			tri.SetPointB(1.0f, 1.0f, -2.0f);
-			tri.SetPointC(1.0f, -1.0f, -2.0f);
+			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
+			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
+			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
 			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
@@ -666,7 +678,7 @@ private:
 	TTG::Timer m_t;
 	TTG::Timer m_tick;
 	TTG::Camera m_camera;
-	TTG::Config m_config;
+	TTG::Config m_config{};
 
 	bool m_viewPortOpen = true;
 	bool m_editorOpen = true;
@@ -675,7 +687,7 @@ private:
 	Renderer m_renderer;
 	Scene m_scene;
 
-	GLFWwindow* m_handle;
+	GLFWwindow* m_handle = nullptr;
 };
 
 bool ExampleLayer::docking = true;

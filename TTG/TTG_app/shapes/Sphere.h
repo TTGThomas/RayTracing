@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../Hittables/Scene.h"
+#include "../Scene.h"
 #include "Utils/Math.h"
+
+#include <glm/glm.hpp>
 
 namespace Shapes
 {
@@ -12,6 +14,9 @@ namespace Shapes
 
 		void AddToScene(Scene* scene);
 
+		void SetPosition(glm::vec3 pos);
+		void SetRadius(float radius);
+
 		void SetMaterialIndex(int index);
 		void SetBsdfIndex(int index);
 
@@ -20,6 +25,6 @@ namespace Shapes
 			return m_sphere;
 		}
 	private:
-		::Sphere m_sphere;
+		::Sphere m_sphere{};
 	};
 }

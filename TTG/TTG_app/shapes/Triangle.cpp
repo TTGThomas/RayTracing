@@ -7,7 +7,7 @@ void Shapes::Triangle::Init(::Triangle triangle)
 
 void Shapes::Triangle::AddToScene(Scene* scene)
 {
-	scene->objects.emplace_back(std::make_unique<Triangle>(m_tri));
+	scene->objects.emplace_back(std::make_unique<::Triangle>(m_tri));
 }
 
 void Shapes::Triangle::SetPointA(glm::vec3 p)
@@ -15,29 +15,14 @@ void Shapes::Triangle::SetPointA(glm::vec3 p)
 	m_tri.m_posA = p;
 }
 
-void Shapes::Triangle::SetPointA(float x, float y, float z)
-{
-	SetPointA(glm::vec3(x, y, z));
-}
-
 void Shapes::Triangle::SetPointB(glm::vec3 p)
 {
 	m_tri.m_posB = p;
 }
 
-void Shapes::Triangle::SetPointB(float x, float y, float z)
-{
-	SetPointB(glm::vec3(x, y, z));
-}
-
 void Shapes::Triangle::SetPointC(glm::vec3 p)
 {
 	m_tri.m_posC = p;
-}
-
-void Shapes::Triangle::SetPointC(float x, float y, float z)
-{
-	SetPointC(glm::vec3(x, y, z));
 }
 
 void Shapes::Triangle::SetMaterialIndex(int index)

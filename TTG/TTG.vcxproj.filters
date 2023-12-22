@@ -78,6 +78,9 @@
     <ClCompile Include="TTG\src\Utils\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TTG_app\shapes\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TTG\src\Layer.h">
@@ -186,6 +189,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TTG_app\Hittables\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TTG_app\shapes\Plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

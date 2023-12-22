@@ -10,15 +10,7 @@ struct Triangle : public Hittable
     {
         this->m_type = HitType::TRIANGLE;
     }
-    
-    glm::vec3 m_posA = glm::vec3(0.0f);
-    glm::vec3 m_posB = glm::vec3(0.0f);
-    glm::vec3 m_posC = glm::vec3(0.0f);
 
-    glm::vec3 m_na = glm::vec3(0.0f);
-    glm::vec3 m_nb = glm::vec3(0.0f);
-    glm::vec3 m_nc = glm::vec3(0.0f);
-    
     virtual float Hit(const Ray& ray) override
     {
 		if (!m_visible)
@@ -57,6 +49,14 @@ struct Triangle : public Hittable
 	float GetU() { return m_u; }
 	float GetV() { return m_v; }
 	float GetW() { return m_w; }
+public:
+	glm::vec3 m_posA = glm::vec3(0.0f);
+	glm::vec3 m_posB = glm::vec3(0.0f);
+	glm::vec3 m_posC = glm::vec3(0.0f);
+
+	glm::vec3 m_na = glm::vec3(0.0f);
+	glm::vec3 m_nb = glm::vec3(0.0f);
+	glm::vec3 m_nc = glm::vec3(0.0f);
 private:
 	float m_u = 0.0f, m_v = 0.0f, m_w = 0.0f;
 };
