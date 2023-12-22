@@ -50,10 +50,10 @@ namespace TTG
 		glm::vec3 m_position = glm::vec3(0.0f);
 		glm::vec3 m_rotation = glm::vec3(0.0f, -90.0f, 0.0f);
 		float m_zoom = 45.0f;
-		double m_speed = 0.0;
+		float m_speed = 0.0f;
 
 		// the max that you can look up and down
-		int m_maxRotationX = 89.0f;
+		float m_maxRotationX = 89.0f;
 
 		std::vector<glm::vec3> m_rayDirections;
 

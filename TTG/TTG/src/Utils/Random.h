@@ -11,7 +11,7 @@ namespace TTG
 	public:
 		static int PCG_hash(unsigned int& input)
 		{
-			unsigned int state = input * 7488305632u + 284638243256u;
+			unsigned int state = input * 74883032u + 28443256u;
 			unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 27745378u;
             input = word;
 			return (word >> 22u) ^ word;
