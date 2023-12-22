@@ -179,7 +179,6 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 		::Triangle* tri = reinterpret_cast<::Triangle*>(m_activateScene->objects[index].get());
 		//::Triangle* tri = dynamic_cast<::Triangle*>(m_activateScene->objects[index].get());
 
-		HitPayload payload;
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
 		payload.m_hitNormal = TTG::Math::Normalize(tri->m_na * tri->m_w + tri->m_nb * tri->m_u + tri->m_nc * tri->m_v);
 	}
@@ -231,8 +230,7 @@ glm::vec4 Renderer::PerPixel(int x, int y)
 		Hittable* object = m_activateScene->objects[hit.m_hitIndex].get();
 		Material& mat = m_activateScene->mat[object->m_matIndex];
 
-		return glm::vec4(hit.m_hitNormal, 1.0f);
-#define ALBEDOSHADER 1
+#define ALBEDOSHADER 0
 #if ALBEDOSHADER
 		return mat.m_albedo;
 #endif
