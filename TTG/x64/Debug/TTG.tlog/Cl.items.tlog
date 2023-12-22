@@ -1,3 +1,4 @@
+D:\learn\c++\RayTracing\TTG\TTG_app\Editor.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\Editor.obj
 D:\learn\c++\RayTracing\TTG\TTG_app\shapes\Plane.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\Plane.obj
 D:\learn\c++\RayTracing\TTG\TTG\src\Utils\Random.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\Random.obj
 D:\learn\c++\RayTracing\TTG\TTG_app\shapes\Sphere.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\Sphere.obj
@@ -19,4 +20,4 @@ D:\learn\c++\RayTracing\TTG\third\imguiOpenGL\imgui_tables.cpp;D:\learn\c++\RayT
 D:\learn\c++\RayTracing\TTG\third\imguiOpenGL\imgui_widgets.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\imgui_widgets.obj
 D:\learn\c++\RayTracing\TTG\third\imguiOpenGL\misc\cpp\imgui_stdlib.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\imgui_stdlib.obj
 D:\learn\c++\RayTracing\TTG\third\stb.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\stb.obj
-D:\learn\c++\RayTracing\TTG\TTG_app\Example.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\Example.obj
+D:\learn\c++\RayTracing\TTG\TTG_app\MainLayer.cpp;D:\learn\c++\RayTracing\TTG\x64\Debug\MainLayer.obj
