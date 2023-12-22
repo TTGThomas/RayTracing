@@ -51,7 +51,7 @@
     <ClCompile Include="TTG\src\Graphics\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TTG_app\Example.cpp">
+    <ClCompile Include="TTG_app\MainLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TTG_app\Renderer.cpp">
@@ -79,6 +79,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TTG_app\shapes\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TTG_app\Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,10 +191,10 @@
     <ClInclude Include="TTG_app\Hittables\HitTriangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TTG_app\Hittables\Scene.h">
+    <ClInclude Include="TTG_app\shapes\Plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TTG_app\shapes\Plane.h">
+    <ClInclude Include="TTG_app\Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

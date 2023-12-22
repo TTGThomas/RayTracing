@@ -7,21 +7,24 @@ namespace TTG
 	class Timer
 	{
 	public:
-		Timer()
-		{
-		}
+		Timer() = default;
 
 		~Timer() = default;
 
 		void Start()
 		{
+			m_started = true;
 			m_start = std::chrono::high_resolution_clock::now();
 		}
 
 		void Stop()
 		{
-			m_end = std::chrono::high_resolution_clock::now();
-			m_duration = m_end - m_start;
+			if (m_started)
+			{
+				m_started = false;
+				m_end = std::chrono::high_resolution_clock::now();
+				m_duration = m_end - m_start;
+			}
 		}
 
 		float Ms()
@@ -38,5 +41,6 @@ namespace TTG
 	private:
 		std::chrono::steady_clock::time_point m_start{}, m_end{};
 		std::chrono::duration<float> m_duration{};
+		bool m_started = false;
 	};
 }

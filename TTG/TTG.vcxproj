@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="TTG_app\Editor.cpp" />
     <ClCompile Include="TTG_app\shapes\Plane.cpp" />
     <ClCompile Include="TTG\src\Utils\Random.cpp" />
     <ClCompile Include="TTG_app\shapes\Sphere.cpp" />
@@ -158,9 +159,10 @@
     <ClCompile Include="third\imguiOpenGL\imgui_widgets.cpp" />
     <ClCompile Include="third\imguiOpenGL\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="third\stb.cpp" />
-    <ClCompile Include="TTG_app\Example.cpp" />
+    <ClCompile Include="TTG_app\MainLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TTG_app\Editor.h" />
     <ClInclude Include="TTG_app\shapes\Plane.h" />
     <ClInclude Include="TTG_app\Hittables\HitPlane.h" />
     <ClInclude Include="TTG_app\Hittables\HitSphere.h" />

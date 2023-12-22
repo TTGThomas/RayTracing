@@ -150,8 +150,8 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 	{
 	case HitType::SPHERE:
 	{
-		::Sphere* sphere = reinterpret_cast<::Sphere*>(m_activateScene->objects[index].get());
-		//::Sphere* sphere = dynamic_cast<::Sphere*>(m_activateScene->objects[index].get());
+		//::Sphere* sphere = reinterpret_cast<::Sphere*>(m_activateScene->objects[index].get());
+		::Sphere* sphere = dynamic_cast<::Sphere*>(m_activateScene->objects[index].get());
 
 		glm::vec3 sphereOrigin = sphere->m_position;
 		sphereOrigin.y = 0.0f - sphereOrigin.y;
@@ -167,8 +167,8 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 		break;
 	case HitType::PLANE:
 	{
-		::Plane* plane = reinterpret_cast<::Plane*>(m_activateScene->objects[index].get());
-		//::Plane* plane = dynamic_cast<::Plane*>(m_activateScene->objects[index].get());
+		//::Plane* plane = reinterpret_cast<::Plane*>(m_activateScene->objects[index].get());
+		::Plane* plane = dynamic_cast<::Plane*>(m_activateScene->objects[index].get());
 
 		payload.m_hitNormal = -plane->m_normal;
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
@@ -176,8 +176,8 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 		break;
 	case HitType::TRIANGLE:
 	{
-		::Triangle* tri = reinterpret_cast<::Triangle*>(m_activateScene->objects[index].get());
-		//::Triangle* tri = dynamic_cast<::Triangle*>(m_activateScene->objects[index].get());
+		//::Triangle* tri = reinterpret_cast<::Triangle*>(m_activateScene->objects[index].get());
+		::Triangle* tri = dynamic_cast<::Triangle*>(m_activateScene->objects[index].get());
 
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
 		payload.m_hitNormal = TTG::Math::Normalize(tri->m_na * tri->m_w + tri->m_nb * tri->m_u + tri->m_nc * tri->m_v);

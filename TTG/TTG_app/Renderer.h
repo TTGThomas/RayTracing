@@ -41,8 +41,7 @@ public:
 	unsigned int GetHeight() { return m_height; }
 
 	int GetFrameIndex() { return m_frameIndex; }
-	bool* GetAccumulate() { return &m_accumulate; };
-	bool* GetSlowRandom() { return &m_slowRandom; }
+	bool* GetAccumulate() { return &m_accumulate; }
     bool* GetSkyLightSwitch() { return &m_skyLight; }
     float* GetDistBlur() { return &m_distBlur; }
     bool* GetDistBlurSwitch() { return &m_useDistBlur; }
@@ -61,7 +60,6 @@ private:
 	TTG::Camera* m_activateCamera = nullptr;
 
 	bool m_accumulate = false;
-	bool m_slowRandom = true;
 	bool m_skyLight = false;
     
     float m_distBlur = 17.0f;
