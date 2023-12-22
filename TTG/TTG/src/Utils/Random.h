@@ -49,10 +49,10 @@ namespace TTG
 
 		static float Float(float min, float max)
 		{
-#define USEMT19937 0
+#define USEMT19937 1
 #if USEMT19937
             std::uniform_real_distribution<> dist(min, max);
-            return dist(m_gen);
+            return (float)dist(m_gen);
 #else
 			return (((float)rand() / (float)RAND_MAX)) * (max - min) + min;
 #endif
@@ -73,7 +73,7 @@ namespace TTG
 			return glm::normalize(Vec3(-1.0f, 1.0f));
 		}
     private:
-        static std::random_device m_rd;
-        static std::mt19937 m_gen;
+        static thread_local std::random_device m_rd;
+        static thread_local std::mt19937 m_gen;
 	};
 }

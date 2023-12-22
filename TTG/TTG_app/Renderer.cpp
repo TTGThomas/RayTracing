@@ -204,7 +204,7 @@ glm::vec4 Renderer::PerPixel(int x, int y)
 
     if (m_useDistBlur)
     {
-        glm::vec3 point = ray.m_origin + ray.m_direction * m_distBlur;
+		glm::vec3 point = ray.m_origin + ray.m_direction * m_distBlur;
         ray.m_origin += TTG::Random::InUnitSphere() * 2.0f;
         ray.m_direction = point - ray.m_origin;
         ray.m_direction = TTG::Math::Normalize(ray.m_direction);
