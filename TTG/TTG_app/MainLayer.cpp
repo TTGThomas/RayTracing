@@ -132,7 +132,8 @@ private:
 
 	void render()
 	{
-		m_renderer.OnResize();
+		if (m_renderer.OnResize())
+			m_camera.ResizeBuffer(m_config);
 		m_editor.StartRenderTimer();
 		m_renderer.Render(m_config);
 		m_editor.StopRenderTimer();
@@ -230,7 +231,7 @@ private:
 			tri.SetPointA(glm::vec3(-0.5f, 0.9f, -0.75f));
 			tri.SetPointB(glm::vec3(-0.5f, 0.9f, -0.25f));
 			tri.SetPointC(glm::vec3(0.5f, 0.9f, -0.25f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(3);
@@ -241,7 +242,7 @@ private:
 			tri.SetPointA(glm::vec3(-0.5f, 0.9f, -0.75f));
 			tri.SetPointB(glm::vec3(0.5f, 0.9f, -0.75f));
 			tri.SetPointC(glm::vec3(0.5f, 0.9f, -0.25f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(3);
@@ -254,7 +255,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(-1.0f, -1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -265,7 +266,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(1.0f, -1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -277,7 +278,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(-1.0f, 1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -288,7 +289,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -300,7 +301,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(-1.0f, -1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(1);
@@ -311,7 +312,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(1);
@@ -324,7 +325,7 @@ private:
 			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));;
 			tri.SetPointB(glm::vec3(1.0f, -1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(2);
@@ -335,7 +336,7 @@ private:
 			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(2);
@@ -348,7 +349,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -359,7 +360,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -404,7 +405,7 @@ private:
 		tri.SetPointA(glm::vec3(0.0f, 6.0f, -2.0f));
 		tri.SetPointB(glm::vec3(-3.0f, 0.0f, -2.0f));
 		tri.SetPointC(glm::vec3(3.0f, 0.0f, -2.0f));
-		tri.FlipSequence();
+		//tri.FlipSequence();
 		tri.ComputeNormal();
 		tri.SetMaterialIndex(0);
 		tri.SetBsdfIndex(Glass);
@@ -415,7 +416,7 @@ private:
 		tri.SetPointC(glm::vec3(3.0f, 0.0f, -2.01f));
 		tri.SetMaterialIndex(0);
 		tri.SetBsdfIndex(Glass);
-		tri.FlipSequence();
+		//tri.FlipSequence();
 		tri.ComputeNormal();
 		tri.AddToScene(&m_scene);
 
@@ -508,7 +509,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointB(pos);
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -519,7 +520,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(1.0f, -1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, 0.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -531,7 +532,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(-1.0f, 1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -542,7 +543,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, 1.0f, 0.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -554,7 +555,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(-1.0f, -1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(1);
@@ -565,7 +566,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(-1.0f, -1.0f, -2.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(1);
@@ -578,7 +579,7 @@ private:
 			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(1.0f, -1.0f, 0.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(2);
@@ -589,7 +590,7 @@ private:
 			tri.SetPointA(glm::vec3(1.0f, 1.0f, 0.0f));
 			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(2);
@@ -602,7 +603,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(-1.0f, -1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			tri.FlipSequence();
+			//tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);
@@ -613,7 +614,7 @@ private:
 			tri.SetPointA(glm::vec3(-1.0f, 1.0f, -2.0f));
 			tri.SetPointB(glm::vec3(1.0f, 1.0f, -2.0f));
 			tri.SetPointC(glm::vec3(1.0f, -1.0f, -2.0f));
-			//tri.FlipSequence();
+			tri.FlipSequence();
 			tri.ComputeNormal();
 			tri.SetBsdfIndex(Basic);
 			tri.SetMaterialIndex(0);

@@ -12,8 +12,8 @@ namespace TTG
 	class Texture
 	{
 	public:
-		void LoadTextureFromFile(std::string filePath);
-		void LoadTextureFromData(unsigned char* data, int nChannels, int width, int height);
+		void LoadTextureFromFile(const std::string& filePath);
+		void LoadTextureFromData(unsigned char* data, const int& nChannels, const int& width, const int& height);
 
 		unsigned int GetID() { return m_id; };
 		ImTextureID GetDescriptorSet() { return (void*)(intptr_t)m_id; };

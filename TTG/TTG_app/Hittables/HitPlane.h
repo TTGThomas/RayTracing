@@ -10,20 +10,10 @@ struct Plane : public Hittable
     {
         this->m_type = HitType::PLANE;
     }
-    
-    virtual float Hit(const Ray& ray) override
-    {
-        if (!m_visible)
-            return -1.0f;
 
-        float denomanator = TTG::Math::Dot(m_normal, ray.m_direction);
-        if (denomanator == 0)
-            return -1.0f;
-
-        float numerator = TTG::Math::Dot(m_normal, m_position * glm::vec3(1.0f, -1.0f, 1.0f)) - TTG::Math::Dot(m_normal, ray.m_origin);
-
-        return numerator / denomanator;
-    }
+    virtual ::Plane* GetPlane() override { return this; }
+    virtual ::Triangle* GetTriangle() override { return nullptr; }
+    virtual ::Sphere* GetSphere() override { return nullptr; }
 public:
     glm::vec3 m_position = glm::vec3(0.0f);
     glm::vec3 m_normal = glm::vec3(0.0f, 1.0f, 0.0f);

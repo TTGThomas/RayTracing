@@ -1,7 +1,7 @@
 #include "Triangle.h"
 #include "Sphere.h"
 
-void Shapes::Sphere::Init(::Sphere sphere)
+void Shapes::Sphere::Init(const ::Sphere& sphere)
 {
 	m_sphere = sphere;
 }
@@ -11,7 +11,7 @@ void Shapes::Sphere::AddToScene(Scene* scene)
 	scene->objects.emplace_back(std::make_unique<::Sphere>(m_sphere));
 }
 
-void Shapes::Sphere::SetPosition(glm::vec3 pos)
+void Shapes::Sphere::SetPosition(const glm::vec3& pos)
 {
 	m_sphere.m_position = pos;
 }

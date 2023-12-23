@@ -42,8 +42,9 @@ namespace TTG
 
 		bool Update(Config& config);
 
+		void ResizeBuffer(const Config& config);
 		void ReCalculateRayDirections(const Config& config);
-		void ReCalculateRayDirections(const Config& config, int x, int y);
+		void ReCalculateRayDirections(const Config& config, const int& x, const int& y);
 
 		bool GetMoved() { return m_moved; }
 	public:

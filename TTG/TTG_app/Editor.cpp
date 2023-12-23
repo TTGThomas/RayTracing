@@ -57,7 +57,7 @@ void Editor::ShowWindow()
                 if (ImGui::CollapsingHeader("Triangle"))
                 {
                     ImGui::Indent();
-                    ::Triangle* tri = dynamic_cast<::Triangle*>(m_activatedScene->objects[i].get());
+                    ::Triangle* tri = m_activatedScene->objects[i].get()->GetTriangle();
                     
                     ImGui::DragFloat3("PointA", &tri->m_posA.x, 0.1f);
                     ImGui::DragFloat3("PointB", &tri->m_posB.x, 0.1f);
@@ -89,7 +89,7 @@ void Editor::ShowWindow()
                 if (ImGui::CollapsingHeader("Sphere"))
                 {
                     ImGui::Indent();
-                    ::Sphere* sphere = dynamic_cast<::Sphere*>(m_activatedScene->objects[i].get());
+                    ::Sphere* sphere = m_activatedScene->objects[i].get()->GetSphere();
 
                     ImGui::DragFloat3("Position", &sphere->m_position.x, 0.1f);
                     ImGui::DragFloat("Radius", &sphere->m_radius, 0.05f);
@@ -105,7 +105,7 @@ void Editor::ShowWindow()
                 if (ImGui::CollapsingHeader("Plane"))
                 {
                     ImGui::Indent();
-                    ::Plane* plane = dynamic_cast<::Plane*>(m_activatedScene->objects[i].get());
+                    ::Plane* plane = m_activatedScene->objects[i].get()->GetPlane();
                     
                     ImGui::DragFloat3("Position", &plane->m_position.x, 0.1f);
                     ImGui::DragFloat3("Normal", &plane->m_normal.x, 0.1f);

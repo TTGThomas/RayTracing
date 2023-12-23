@@ -10,11 +10,11 @@ namespace Shapes
 	class Sphere
 	{
 	public:
-		void Init(::Sphere sphere);
+		void Init(const ::Sphere& sphere);
 
 		void AddToScene(Scene* scene);
 
-		void SetPosition(glm::vec3 pos);
+		void SetPosition(const glm::vec3& pos);
 		void SetRadius(float radius);
 
 		void SetMaterialIndex(int index);

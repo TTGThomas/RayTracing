@@ -7,46 +7,28 @@ namespace TTG
 {
 	namespace Math
 	{
-		inline float Dot(glm::vec3 a, glm::vec3 b)
+		inline float Dot(const glm::vec3& a, const glm::vec3& b)
 		{
 			return a.x * b.x + a.y * b.y + a.z * b.z;
 		}
 
-		inline float Sqrt(float in)
+		inline float Sqrt(const float& in)
 		{
-			return glm::sqrt(in);
-			//return glm::fastSqrt<float>(in);
-			//float xhalf = 0.5f * in;
-			//int i = *(int*)&in;
-			//i = 0x5f375a86 - (i >> 1);
-			//in = *(float*)&i;
-			//in = in * (1.5f - xhalf * in * in);
-			//return 1 / in;
-			//long i;
-			//float x, y;
-			//const float f = 1.5f;
-			//
-			//x = in * 0.5f;
-			//y = in;
-			//i = *(long*)&y;
-			//i = 0x5f3759df - (i >> 1);
-			//y = *(float*)&i;
-			//y = y * (f - (x * y * y));
-			//y = y * (f - (x * y * y));
-			//return in * y;
+			return std::sqrt(in);
+			//return glm::sqrt(in);
 		}
 
-		inline float Length(glm::vec3 in)
+		inline float Length(const glm::vec3& in)
 		{
 			return sqrt(dot(in, in));
 		}
 
-		inline glm::vec3 Normalize(glm::vec3 in)
+		inline glm::vec3 Normalize(const glm::vec3& in)
 		{
 			return in / length(in);
 		}
 
-		inline glm::vec3 Cross(glm::vec3 x, glm::vec3 y)
+		inline glm::vec3 Cross(const glm::vec3& x, const glm::vec3& y)
 		{
 			return glm::vec3(
 				x.y * y.z - y.y * x.z,

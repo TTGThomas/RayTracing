@@ -26,6 +26,9 @@ public:
 
 	void ResetFrameIndex() { m_frameIndex = 0; }
 
+	float HitTriangle(::Triangle* tri, const Ray& ray);
+	float HitSphere(::Sphere* sphere, const Ray& ray);
+	float HitPlane(::Plane* plane, const Ray& ray);
 	HitPayload TraceRay(const Ray& ray);
 	HitPayload ClosestHit(const Ray& ray, float t, int index);
 	HitPayload Miss();

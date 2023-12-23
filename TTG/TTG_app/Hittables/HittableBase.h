@@ -6,9 +6,16 @@
 
 #include "Utils/Math.h"
 
+struct Plane;
+struct Triangle;
+struct Sphere;
+
 struct Hittable
-{   
-    virtual float Hit(const Ray& ray) { return -1.0f; }
+{
+public:
+    virtual ::Plane* GetPlane() { return nullptr; }
+    virtual ::Triangle* GetTriangle() { return nullptr; }
+    virtual ::Sphere* GetSphere() { return nullptr; }
 public:
     HitType m_type;
     int m_matIndex = 0;

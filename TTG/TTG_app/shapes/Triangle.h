@@ -10,15 +10,15 @@ namespace Shapes
 	public:
 		Triangle() = default;
 
-		void Init(::Triangle triangle);
+		void Init(const ::Triangle& triangle);
 
 		void AddToScene(Scene* scene);
 
-		void SetPointA(glm::vec3 p);
+		void SetPointA(const glm::vec3& p);
 
-		void SetPointB(glm::vec3 p);
+		void SetPointB(const glm::vec3& p);
 
-		void SetPointC(glm::vec3 p);
+		void SetPointC(const glm::vec3& p);
 
 		void SetMaterialIndex(int index);
 		void SetBsdfIndex(int index);

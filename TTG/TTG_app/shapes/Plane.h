@@ -10,12 +10,12 @@ namespace Shapes
 	class Plane
 	{
 	public:
-		void Init(::Plane plane);
+		void Init(const ::Plane& plane);
 
 		void AddToScene(Scene* scene);
 
-		void SetPosition(glm::vec3 pos);
-		void SetNormal(glm::vec3 normal);
+		void SetPosition(const glm::vec3& pos);
+		void SetNormal(const glm::vec3& normal);
 
 		void SetMaterialIndex(int index);
 		void SetBsdfIndex(int index);

@@ -78,11 +78,11 @@ namespace TTG
 			break;
 
 		case DIRECTION::UP:
-			m_position -= m_worldUp * add;
+			m_position += m_worldUp * add;
 			break;
 
 		case DIRECTION::DOWN:
-			m_position += m_worldUp * add;
+			m_position -= m_worldUp * add;
 			break;
 
 		default:
@@ -119,7 +119,7 @@ namespace TTG
 
 		oldMousePos = ImGui::GetMousePos();
 
-		m_rotation.x += mousePos.y * 0.5f;
+		m_rotation.x += mousePos.y * -0.5f;// invert Y
 		m_rotation.y += mousePos.x * 0.5f;
 
 		if (mousePos != glm::vec2(0.0f))
@@ -160,6 +160,11 @@ namespace TTG
 		return m_moved;
 	}
 
+	void Camera::ResizeBuffer(const Config& config)
+	{
+		m_rayDirections.resize((size_t)config.screenWidth * (size_t)config.screenHeight);
+	}
+
 	void Camera::ReCalculateRayDirections(const Config& config)
 	{
 		m_rayDirections.resize((size_t)config.screenWidth * (size_t)config.screenHeight);
@@ -179,7 +184,7 @@ namespace TTG
 			}
 		}
 	}
-	void Camera::ReCalculateRayDirections(const Config& config, int x, int y)
+	void Camera::ReCalculateRayDirections(const Config& config, const int& x, const int& y)
 	{
 		glm::vec2 coord = { (float)x / config.screenWidth, (float)y / config.screenHeight };
 		coord = coord * 2.0f - 1.0f;

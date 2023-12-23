@@ -73,10 +73,11 @@ void Renderer::Render(TTG::Config& config)
 				glm::vec<4, unsigned char> inColor = ConvertToChar(pixelColor);
 				// map to image data
 
-				m_imageData[(y * m_width + x) * 4 + 0] = inColor.r;
-				m_imageData[(y * m_width + x) * 4 + 1] = inColor.g;
-				m_imageData[(y * m_width + x) * 4 + 2] = inColor.b;
-				m_imageData[(y * m_width + x) * 4 + 3] = inColor.a;
+				unsigned int baseCoord = (((unsigned int)m_heightIter.size() - (unsigned int)1 - y) * m_width + x) * (unsigned int)4;
+				m_imageData[baseCoord + 0] = inColor.r;
+				m_imageData[baseCoord + 1] = inColor.g;
+				m_imageData[baseCoord + 2] = inColor.b;
+				m_imageData[baseCoord + 3] = inColor.a;
 			}
 		});
 #else
@@ -106,7 +107,7 @@ void Renderer::Render(TTG::Config& config)
         }
     };
     std::vector<std::thread> threads;
-	for (unsigned int y = 0; y < m_height; y++)
+	for (unsigned int y = m_height - 1; y >= 0; y--)
 	{
         threads.push_back(std::thread(xTick, y));
 	}
@@ -117,6 +118,84 @@ void Renderer::Render(TTG::Config& config)
 #endif
 }
 
+float Renderer::HitTriangle(::Triangle* tri, const Ray& ray)
+{
+	if (!tri->m_visible)
+		return -1.0f;
+
+	const glm::vec3& a = tri->m_posA;
+	const glm::vec3& b = tri->m_posB;
+	const glm::vec3& c = tri->m_posC;
+
+	glm::vec3 edgeAB = b - a;
+	glm::vec3 edgeAC = c - a;
+	glm::vec3 normalVector = TTG::Math::Cross(edgeAB, edgeAC);
+	glm::vec3 ao = ray.m_origin - a;
+	glm::vec3 dao = TTG::Math::Cross(ao, ray.m_direction);
+
+	float determinant = -TTG::Math::Dot(ray.m_direction, normalVector);
+	float invDet = 1 / determinant;
+
+	float dst = TTG::Math::Dot(ao, normalVector) * invDet;
+	tri->m_u = TTG::Math::Dot(edgeAC, dao) * invDet;
+	tri->m_v = -TTG::Math::Dot(edgeAB, dao) * invDet;
+	tri->m_w = 1 - tri->m_u - tri->m_v;
+
+	bool hasHit = determinant > 0.0001f && dst > 0 && tri->m_u > 0 && tri->m_v > 0 && tri->m_w > 0;
+
+	if (!hasHit)
+		return -1.0f;
+	return dst;
+}
+
+float Renderer::HitSphere(::Sphere* sphere, const Ray& ray)
+{
+	if (!sphere->m_visible)
+		return -1.0f;
+
+	glm::vec3 sphereOrigin;
+	sphereOrigin = sphere->m_position;
+	//sphereOrigin.y = -sphereOrigin.y;
+
+	float radius = sphere->m_radius;
+
+	glm::vec3 origin = ray.m_origin - sphereOrigin;
+
+	// origin formula = (x)^2 + (y)^2 = r^2
+
+	// a = ray origin
+	// b = ray direction
+	// r = radius
+	// t = hit distance
+	// (bx^2 + by^2 + bz^2)t^2 + (axbx + ayby + azbz)2t + (ax^2 + ay^2 + az^2 - r^2) = 0;
+
+	//float a = 1.0f;
+	float a = TTG::Math::Dot(ray.m_direction, ray.m_direction);
+	float b = TTG::Math::Dot(origin, ray.m_direction);// b / 2
+	float c = TTG::Math::Dot(origin, origin) - radius * radius;
+
+	// Quad = b^2 - 4ac
+
+	float discriminant = (b * b) - (a * c);
+	// completes the quadratic equation
+	float closestT = (-b - TTG::Math::Sqrt(discriminant)) / (a);
+	return closestT;
+}
+
+float Renderer::HitPlane(::Plane* plane, const Ray& ray)
+{
+	if (!plane->m_visible)
+		return -1.0f;
+
+	float denomanator = TTG::Math::Dot(plane->m_normal, ray.m_direction);
+	if (denomanator == 0)
+		return -1.0f;
+
+	float numerator = TTG::Math::Dot(plane->m_normal, plane->m_position * glm::vec3(1.0f, -1.0f, 1.0f)) - TTG::Math::Dot(plane->m_normal, ray.m_origin);
+
+	return numerator / denomanator;
+}
+
 HitPayload Renderer::TraceRay(const Ray& ray)
 {
 	float minDist = FLT_MAX;
@@ -124,7 +203,13 @@ HitPayload Renderer::TraceRay(const Ray& ray)
 	for (int i = 0; i < m_activateScene->objects.size(); i++)
 	{
 		Hittable* object = m_activateScene->objects[i].get();
-		float dist = object->Hit(ray);
+		float dist = -1.0f;
+		if (object->m_type == HitType::TRIANGLE)
+			dist = HitTriangle(object->GetTriangle(), ray);
+		else if (object->m_type == HitType::SPHERE)
+			dist = HitSphere(object->GetSphere(), ray);
+		else if (object->m_type == HitType::PLANE)
+			dist = HitPlane(object->GetPlane(), ray);
 		if (dist < minDist && dist > 0.0f)
 		{
 			index = i;
@@ -151,10 +236,12 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 	case HitType::SPHERE:
 	{
 		//::Sphere* sphere = reinterpret_cast<::Sphere*>(m_activateScene->objects[index].get());
-		::Sphere* sphere = dynamic_cast<::Sphere*>(m_activateScene->objects[index].get());
+		::Sphere* sphere = m_activateScene->objects[index].get()->GetSphere();
+		if (sphere == nullptr)
+			return Miss();
 
 		glm::vec3 sphereOrigin = sphere->m_position;
-		sphereOrigin.y = 0.0f - sphereOrigin.y;
+		//sphereOrigin.y = -sphereOrigin.y;
 		glm::vec3 origin = ray.m_origin - sphereOrigin;
 
 		glm::vec3 hitPoint = origin + (ray.m_direction * t);
@@ -168,7 +255,9 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 	case HitType::PLANE:
 	{
 		//::Plane* plane = reinterpret_cast<::Plane*>(m_activateScene->objects[index].get());
-		::Plane* plane = dynamic_cast<::Plane*>(m_activateScene->objects[index].get());
+		::Plane* plane = m_activateScene->objects[index].get()->GetPlane();
+		if (plane == nullptr)
+			return Miss();
 
 		payload.m_hitNormal = -plane->m_normal;
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
@@ -177,7 +266,9 @@ HitPayload Renderer::ClosestHit(const Ray& ray, float t, int index)
 	case HitType::TRIANGLE:
 	{
 		//::Triangle* tri = reinterpret_cast<::Triangle*>(m_activateScene->objects[index].get());
-		::Triangle* tri = dynamic_cast<::Triangle*>(m_activateScene->objects[index].get());
+		::Triangle* tri = m_activateScene->objects[index].get()->GetTriangle();
+		if (tri == nullptr)
+			return Miss();
 
 		payload.m_hitPos = ray.m_origin + (ray.m_direction * t);
 		payload.m_hitNormal = TTG::Math::Normalize(tri->m_na * tri->m_w + tri->m_nb * tri->m_u + tri->m_nc * tri->m_v);
@@ -198,6 +289,7 @@ HitPayload Renderer::Miss()
 
 glm::vec4 Renderer::PerPixel(int x, int y)
 {
+	//return glm::vec4((float)x / m_width, (float)y / m_height, 0.0f, 1.0f);
 	Ray ray;
 	ray.m_origin = m_activateCamera->m_position;
 	ray.m_direction = m_activateCamera->m_rayDirections[y * m_width + x];
