@@ -1,2 +1,0 @@
-#RAY TRACING PROJECT
-by me
