@@ -1,7 +1,0 @@
-﻿  Renderer.cpp
-  Generating code
-  2 of 2710 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    37 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  TTG.vcxproj -> D:\learn\c++\RayTracing\x64\Release\TTG.exe
