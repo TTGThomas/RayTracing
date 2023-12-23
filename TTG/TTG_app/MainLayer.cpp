@@ -132,11 +132,7 @@ private:
 
 	void render()
 	{
-		if (m_renderer.OnResize())
-		{
-			m_camera.ReCalculateRayDirections(m_config);
-		}
-
+		m_renderer.OnResize();
 		m_editor.StartRenderTimer();
 		m_renderer.Render(m_config);
 		m_editor.StopRenderTimer();
