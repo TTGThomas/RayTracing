@@ -50,8 +50,7 @@ bool Renderer::OnResize()
 void Renderer::Render(TTG::Config& config)
 {
 	m_frameIndex++;
-#define mt 1
-#if mt
+#ifdef _WIN32_
 	std::for_each(std::execution::par, m_heightIter.begin(), m_heightIter.end(), 
 		[this, config](unsigned int y)
 		{
@@ -100,14 +99,15 @@ void Renderer::Render(TTG::Config& config)
             glm::vec<4, unsigned char> inColor = ConvertToChar(pixelColor);
             // map to image data
 
-            m_imageData[(y * m_width + x) * 4 + 0] = inColor.r;
-            m_imageData[(y * m_width + x) * 4 + 1] = inColor.g;
-            m_imageData[(y * m_width + x) * 4 + 2] = inColor.b;
-            m_imageData[(y * m_width + x) * 4 + 3] = inColor.a;
+            unsigned int baseCoord = (((unsigned int)m_heightIter.size() - (unsigned int)1 - y) * m_width + x) * (unsigned int)4;
+            m_imageData[baseCoord + 0] = inColor.r;
+            m_imageData[baseCoord + 1] = inColor.g;
+            m_imageData[baseCoord + 2] = inColor.b;
+            m_imageData[baseCoord + 3] = inColor.a;
         }
     };
     std::vector<std::thread> threads;
-	for (unsigned int y = m_height - 1; y >= 0; y--)
+	for (unsigned int y = 0; y < m_height; y++)
 	{
         threads.push_back(std::thread(xTick, y));
 	}

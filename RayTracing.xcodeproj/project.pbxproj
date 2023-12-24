@@ -23,7 +23,6 @@
 		3B08D71C2B2ED4DA00812F2B /* GlassBsdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D6FF2B2ED4DA00812F2B /* GlassBsdf.cpp */; };
 		3B08D71D2B2ED4DA00812F2B /* BasicBsdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D7012B2ED4DA00812F2B /* BasicBsdf.cpp */; };
 		3B08D71E2B2ED4DA00812F2B /* TestBsdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D7042B2ED4DA00812F2B /* TestBsdf.cpp */; };
-		3B08D71F2B2ED4DA00812F2B /* Example.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D7062B2ED4DA00812F2B /* Example.cpp */; };
 		3B08D7202B2ED4DA00812F2B /* Triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D70A2B2ED4DA00812F2B /* Triangle.cpp */; };
 		3B08D7212B2ED4DA00812F2B /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D70D2B2ED4DA00812F2B /* Renderer.cpp */; };
 		3B08D8DB2B2ED4E700812F2B /* glm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B08D81A2B2ED4E700812F2B /* glm.cpp */; };
@@ -37,6 +36,10 @@
 		3B08DD4D2B315E6F00812F2B /* libassimp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B08DD492B315E6F00812F2B /* libassimp.dylib */; };
 		3B08DD4E2B315E6F00812F2B /* libzlibstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B08DD4A2B315E6F00812F2B /* libzlibstatic.a */; };
 		3B08DD4F2B315E6F00812F2B /* libassimp.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B08DD4B2B315E6F00812F2B /* libassimp.5.dylib */; };
+		3B343FE32B380AF9005671BE /* MainLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B343FE22B380AF9005671BE /* MainLayer.cpp */; };
+		3B343FE92B380B14005671BE /* Plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B343FE52B380B14005671BE /* Plane.cpp */; };
+		3B343FEA2B380B14005671BE /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B343FE72B380B14005671BE /* Sphere.cpp */; };
+		3B343FED2B380B27005671BE /* Editor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B343FEB2B380B27005671BE /* Editor.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -109,14 +112,12 @@
 		3B08D7032B2ED4DA00812F2B /* TestBsdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBsdf.h; sourceTree = "<group>"; };
 		3B08D7042B2ED4DA00812F2B /* TestBsdf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestBsdf.cpp; sourceTree = "<group>"; };
 		3B08D7052B2ED4DA00812F2B /* Bsdf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bsdf.h; sourceTree = "<group>"; };
-		3B08D7062B2ED4DA00812F2B /* Example.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Example.cpp; sourceTree = "<group>"; };
 		3B08D7072B2ED4DA00812F2B /* Materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Materials.h; sourceTree = "<group>"; };
 		3B08D7082B2ED4DA00812F2B /* Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
 		3B08D70A2B2ED4DA00812F2B /* Triangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Triangle.cpp; sourceTree = "<group>"; };
 		3B08D70B2B2ED4DA00812F2B /* Triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
 		3B08D70C2B2ED4DA00812F2B /* Ray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ray.h; sourceTree = "<group>"; };
 		3B08D70D2B2ED4DA00812F2B /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
-		3B08D70E2B2ED4DA00812F2B /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
 		3B08D7252B2ED4E700812F2B /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		3B08D7272B2ED4E700812F2B /* khrplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = khrplatform.h; sourceTree = "<group>"; };
 		3B08D7292B2ED4E700812F2B /* glad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glad.h; sourceTree = "<group>"; };
@@ -642,6 +643,14 @@
 		3B08DD492B315E6F00812F2B /* libassimp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libassimp.dylib; sourceTree = "<group>"; };
 		3B08DD4A2B315E6F00812F2B /* libzlibstatic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzlibstatic.a; sourceTree = "<group>"; };
 		3B08DD4B2B315E6F00812F2B /* libassimp.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libassimp.5.dylib; sourceTree = "<group>"; };
+		3B343FE22B380AF9005671BE /* MainLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainLayer.cpp; sourceTree = "<group>"; };
+		3B343FE42B380B08005671BE /* Scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
+		3B343FE52B380B14005671BE /* Plane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Plane.cpp; sourceTree = "<group>"; };
+		3B343FE62B380B14005671BE /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
+		3B343FE72B380B14005671BE /* Sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
+		3B343FE82B380B14005671BE /* Plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Plane.h; sourceTree = "<group>"; };
+		3B343FEB2B380B27005671BE /* Editor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Editor.cpp; sourceTree = "<group>"; };
+		3B343FEC2B380B27005671BE /* Editor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Editor.h; sourceTree = "<group>"; };
 		3B5F52022B3426DE00C27295 /* HittableBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HittableBase.h; sourceTree = "<group>"; };
 		3B5F52032B34283700C27295 /* HitTriangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HitTriangle.h; sourceTree = "<group>"; };
 		3B5F52042B34290400C27295 /* HitSphere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HitSphere.h; sourceTree = "<group>"; };
@@ -858,10 +867,13 @@
 		3B08D6FC2B2ED4DA00812F2B /* TTG_app */ = {
 			isa = PBXGroup;
 			children = (
+				3B343FEB2B380B27005671BE /* Editor.cpp */,
+				3B343FEC2B380B27005671BE /* Editor.h */,
+				3B343FE42B380B08005671BE /* Scene.h */,
+				3B343FE22B380AF9005671BE /* MainLayer.cpp */,
 				3B5F52012B3426BC00C27295 /* Hittables */,
 				3B08D6FD2B2ED4DA00812F2B /* HitPayload.h */,
 				3B08D6FE2B2ED4DA00812F2B /* Materials */,
-				3B08D7062B2ED4DA00812F2B /* Example.cpp */,
 				3B08D7072B2ED4DA00812F2B /* Materials.h */,
 				3B08D7082B2ED4DA00812F2B /* Renderer.h */,
 				3B08D7092B2ED4DA00812F2B /* shapes */,
@@ -888,6 +900,10 @@
 		3B08D7092B2ED4DA00812F2B /* shapes */ = {
 			isa = PBXGroup;
 			children = (
+				3B343FE52B380B14005671BE /* Plane.cpp */,
+				3B343FE82B380B14005671BE /* Plane.h */,
+				3B343FE72B380B14005671BE /* Sphere.cpp */,
+				3B343FE62B380B14005671BE /* Sphere.h */,
 				3B08D70A2B2ED4DA00812F2B /* Triangle.cpp */,
 				3B08D70B2B2ED4DA00812F2B /* Triangle.h */,
 			);
@@ -1563,7 +1579,6 @@
 		3B5F52012B3426BC00C27295 /* Hittables */ = {
 			isa = PBXGroup;
 			children = (
-				3B08D70E2B2ED4DA00812F2B /* Scene.h */,
 				3B5F52022B3426DE00C27295 /* HittableBase.h */,
 				3B5F52032B34283700C27295 /* HitTriangle.h */,
 				3B5F52042B34290400C27295 /* HitSphere.h */,
@@ -1630,21 +1645,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B08D7112B2ED4DA00812F2B /* imgui_stdlib.cpp in Sources */,
+				3B343FEA2B380B14005671BE /* Sphere.cpp in Sources */,
 				3B08D70F2B2ED4DA00812F2B /* glad.c in Sources */,
 				3B08D7132B2ED4DA00812F2B /* imgui_impl_opengl3.cpp in Sources */,
 				3B08D7182B2ED4DA00812F2B /* imgui_draw.cpp in Sources */,
+				3B343FE92B380B14005671BE /* Plane.cpp in Sources */,
 				3B08D7192B2ED4DA00812F2B /* Camera.cpp in Sources */,
 				3B08D71B2B2ED4DA00812F2B /* Texture.cpp in Sources */,
 				3B08D8E82B30050000812F2B /* Random.cpp in Sources */,
+				3B343FE32B380AF9005671BE /* MainLayer.cpp in Sources */,
 				3B08D7102B2ED4DA00812F2B /* stb.cpp in Sources */,
 				3B08D7202B2ED4DA00812F2B /* Triangle.cpp in Sources */,
 				3B08D8DB2B2ED4E700812F2B /* glm.cpp in Sources */,
 				3B08D7122B2ED4DA00812F2B /* imgui_widgets.cpp in Sources */,
 				3B08D7152B2ED4DA00812F2B /* imgui.cpp in Sources */,
-				3B08D71F2B2ED4DA00812F2B /* Example.cpp in Sources */,
 				3B08D71A2B2ED4DA00812F2B /* Application.cpp in Sources */,
 				3B08D7162B2ED4DA00812F2B /* imgui_tables.cpp in Sources */,
 				3B08D7212B2ED4DA00812F2B /* Renderer.cpp in Sources */,
+				3B343FED2B380B27005671BE /* Editor.cpp in Sources */,
 				3B08D7142B2ED4DA00812F2B /* imgui_impl_glfw.cpp in Sources */,
 				3B08D71E2B2ED4DA00812F2B /* TestBsdf.cpp in Sources */,
 				3B08D7172B2ED4DA00812F2B /* imgui_demo.cpp in Sources */,
