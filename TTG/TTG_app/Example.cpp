@@ -1,6 +1,6 @@
 #pragma once
 
-#include <assimp/Importer.hpp>
+//#include <assimp/Importer.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 
